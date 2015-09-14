@@ -1,0 +1,253 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Program regrid</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Program regrid</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Zhi.Liang@noaa.gov">   Zhi Liang </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/postprocessing/regrid">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Since most analyses are placed on a spherical latitude-longitude grid and
+   most global ocean models configured from mom4 are run with tripolar grids.
+   A regridding tool is needed to regrid data from tripolar grid onto latitude-longitude 
+   grid. This program map data from any logical rectangular grid 
+   (tripolar or latitude-longitude) to a spherical latitude-longitude grid.
+   When the data is on Tracer cell (T-cell), the interpolation will be a conservative 
+   scheme. When the data is on other position (C-cell, E-cell or N-cell), regridding 
+   is accomplished non-conservatively using a nearest neighbor distance weighting algorithm. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   Before using this regridding tool, you need to use preprocessing tool 
+   make_xgrids to generate the grid file which contains source grid, destination 
+   grid and exchange grid information between source grid and destination grid. 
+   These exchange grid information is needed when doing conservative remapping.
+   Suppose the file name of your source grid is src_grid.nc and the file name of
+   your destination grid is dst_grid.nc (dst grid should be spherical 
+   latitude-lontitude grid), the command will be 
+   "make_xgrids -o src_grid.nc -a dst_grid.nc".
+   Before using make_xgrids, you need to make sure src_grid.nc does not contain
+   any exchange grid information. Otherwise you are not going to get the 
+   desired exchange grid information. If your src_grid.nc do contains exchange
+   grid information, you can remove all those fields by using ncks. Those fields are 
+   AREA_ATMxOCN, DI_ATMxOCN, DJ_ATMxOCN, I_ATM_ATMxOCN, J_ATM_ATMxOCN, I_OCN_ATMxOCN, 
+   J_OCN_ATMxOCN, AREA_ATMxLND, DI_ATMxLND, DJ_ATMxLND, I_ATM_ATMxLND, J_ATM_ATMxLND,
+   I_LND_ATMxLND, J_LND_ATMxLND, AREA_LNDxOCN, DI_LNDxOCN, DJ_LNDxOCN, 
+   I_LND_LNDxOCN, J_LND_LNDxOCN, I_OCN_LNDxOCN, J_OCN_LNDxOCN, xba, yba, xta, yta, 
+   AREA_ATM, xbl, ybl, xtl, ytl, AREA_LND, AREA_LND_CELL, xto, yto and AREA_OCN. 
+   After the grid file is generated, the grid file should be passed into the program 
+   through nml option "grid_spec_file". 
+   <br>
+<br>
+   This program expects to read data from a netcdf file, which is specfied
+   by the namelist variable "src_data". The number of data to be remapped is 
+   specified by num_flds. The name of field to be remapped is specified 
+   by the namelist variable "fld_name". The output file is a netcdf file specified
+   by the namelist variable "dst_data". Each field can be a scalar variable or
+   a vector field, which is specified by vector_fld. The vector field should
+   always be paired together. The data will be always on the source vertical grid.
+   Previous experiences show that linear vertical interpolation will create lots of noises.
+   If we find better vertical interpolation algorithm, we may implement it in the
+   future. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>         mpp_mod<br> mpp_domains_mod<br>         fms_mod<br>      fms_io_mod<br>   constants_mod<br>horiz_interp_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl></dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a"></ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;regrid_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>num_flds</tt>
+</dt>
+<dl>   Number of fields. <br>
+<span class="type">[integer, default: 0]</span>
+</dl>
+<dt>
+<tt>src_data</tt>
+</dt>
+<dl>   Name of input file containing to-be-remapped data. <br>
+<span class="type">[character(len=128)]</span>
+</dl>
+<dt>
+<tt>dst_data</tt>
+</dt>
+<dl>   Name of output file containing after-remapped data. <br>
+<span class="type">[character(len=128)]</span>
+</dl>
+<dt>
+<tt>grid_spec_file</tt>
+</dt>
+<dl>   Name of grid descriptor file containing source and target grid information, 
+   exchange grid information between source and target grid. This grid file can 
+   be created using preprocessing tool make_xgrids. <br>
+<span class="type">[character(len=128)]</span>
+</dl>
+<dt>
+<tt>fld_name</tt>
+</dt>
+<dl>   Name of field to be regridded in input file. <br>
+<span class="type">[character(len=128), dimension(max_flds)]</span>
+</dl>
+<dt>
+<tt>fld_pos</tt>
+</dt>
+<dl>   Name of grid where the field located.  Valid choices are (T)racer, (C)orner, (E)ast and (N)orth. <br>
+<span class="type">[character(len=1),dimension(max_flds), default: T]</span>
+</dl>
+<dt>
+<tt>vector_field</tt>
+</dt>
+<dl>   True if fields are vector components. All the vector field should be paired together.
+   That is, if vector_field(n) is .true., then vector_field(n+1) should be true. <br>
+<span class="type">[logical,dimension(max_flds), default: False]</span>
+</dl>
+<dt>
+<tt>num_nbrs</tt>
+</dt>
+<dl>   Number of nearest neighbors for regridding. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>max_dist</tt>
+</dt>
+<dl>   Maximum region of influence around destination grid points. <br>
+<span class="type">[real, units: radians]</span>
+</dl>
+<dt>
+<tt>debug</tt>
+</dt>
+<dl>   For Debugging. Set true to print out chksum information for debugging reproducing ability 
+   accross processors. default is false. <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

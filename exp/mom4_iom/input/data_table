@@ -1,0 +1,91 @@
+# format for data_table:
+# gridname, fieldname_code, fieldname_file, filename,
+#time_spec(-1), time_unit(-1), const_value(-1.e10), ongrid, factor
+"OCN", "u_flux", "taux" , "INPUT/tau.nc",.true.,1.0
+"OCN", "v_flux", "tauy" , "INPUT/tau.nc",.true.,1.0
+"OCN", "lprec","NET_PRATE", "INPUT/net_prate.nc",.true.,1.0
+"OCN", "p","","",.true.,0.0
+"OCN", "sw_flux","NSWRS","INPUT/nswrs.nc",.true.,1.0
+"OCN", "lw_flux","","",.true.,0.0
+"OCN", "fprec","", "",.true.,0.0
+"OCN", "t_flux", "HFLUX_MINUS_SW","INPUT/hflux_minus_sw.nc",.true.,-1.0
+"OCN", "q_flux", "","",.true.,0.0
+"OCN", "calving",   ""  , "",.false. ,0.0
+"OCN", "runoff",   ""  , "",.false. ,0.0
+"OCN", "salt_flux",   ""  , "",.false. ,0.0  
+"ATM", "t",         ""           , "",.false. ,273.0
+"ATM", "albedo",    ""      , "",.false. ,0.0  
+"ATM", "land_frac", ""   , "",.false. ,0.0  
+"ATM", "dt_t",      ""        , "",.false. ,0.0  
+"ATM", "dt_q",      ""        , "",.false. ,0.0  
+"ATM", "u_flux",    ""      , "",.false. ,0.0  
+"ATM", "v_flux",    ""      , "",.false. ,0.0  
+"ATM", "dtaudv",    ""      , "",.false. ,0.0  
+"ATM", "u_star",    ""      , "",.false. ,0.0  
+"ATM", "b_star",    ""      , "",.false. ,0.0  
+"ATM", "q_star",    ""  , "",.false. ,0.0  
+"ATM", "rough_mom", ""  , "",.false. ,0.01 
+"ATM", "flux_sw",   "" , "" ,.false.,0.0  
+"ATM", "flux_lw",   "" , "" ,.false.,0.0  
+"ATM", "lprec",     "" , "" ,.false.,0.0  
+"ATM", "fprec",     "" , "" ,.false.,0.0  
+"ATM", "coszen",    "" , "" ,.false.,0.0  
+"ATM", "dtmass",    "" , "" ,.false.,0.0  
+"ATM", "delta_t",   "" , "" ,.false.,0.0  
+"ATM", "delta_q",   "" , "" ,.false.,0.0  
+"ATM", "dflux_t",   "" , "" ,.false.,0.0  
+"ATM", "dflux_q",   "" , "" ,.false.,0.0  
+"ATM", "t_bot",     ""  , "" ,.false.,273.0
+"ATM", "q_bot",     ""  , "" ,.false.,0.0  
+"ATM", "z_bot",     ""  , "" ,.false.,10.0 
+"ATM", "p_bot",     ""  , "" ,.false.,1e5  
+"ATM", "u_bot",     ""  , "" ,.false.,0.0  
+"ATM", "v_bot",     ""  , "" ,.false.,0.0  
+"ATM", "p_surf",    ""  , "" ,.false.,1e5  
+"ATM", "gust",      ""  , "" ,.false.,0.0  
+"ICE", "u",         ""  , "",.false. ,0.0  
+"ICE", "v",         ""  , "",.false. ,0.0  
+"ICE", "t",         ""  , "",.false. ,273.0
+"ICE", "s",         ""  , "",.false. ,0.0  
+"ICE", "frazil",    ""  , "",.false. ,0.0  
+"ICE", "sea_level", ""  , "",.false. ,0.0  
+"ICE", "u_flux",    ""  , "",.false. ,0.0  
+"ICE", "v_flux",    ""  , "",.false. ,0.0  
+"ICE", "t_flux",    ""  , "",.false. ,0.0  
+"ICE", "q_flux",    ""  , "",.false. ,0.0  
+"ICE", "lw_flux",   ""  , "",.false. ,0.0  
+"ICE", "sw_flux",   ""  , "",.false. ,0.0  
+"ICE", "lprec",     ""  , "",.false. ,0.0  
+"ICE", "fprec",     ""  , "",.false. ,0.0  
+"ICE", "dhdt",      ""  , "",.false. ,0.0  
+"ICE", "dedt",      ""  , "",.false. ,0.0  
+"ICE", "drdt",      ""  , "",.false. ,0.0  
+"ICE", "coszen",    ""  , "",.false. ,0.0  
+"ICE", "p",         ""  , "",.false. ,0.0  
+"ICE", "runoff" ,   ""  , "",.false. ,0.0  
+"ICE", "calving",   ""  , "",.false. ,0.0  
+"ICE", "t_surf",    ""  , "" ,.false.,273.0
+"ICE", "rough_mom", ""  , "" ,.false.,0.01 
+"ICE", "rough_heat","" , "" ,.false.,0.01 
+"ICE", "rough_moist","", "" ,.false.,0.01 
+"ICE", "albedo",     "", "" ,.false.,0.0  
+"ICE", "u_surf",     "", "" ,.false.,0.0  
+"ICE", "v_surf",     "", "" ,.false.,0.0  
+"LND", "t_surf",     "", "" ,.false.,273.0
+"LND", "t_ca",       "", "" ,.false.,273.0
+"LND", "q_ca",       "", "" ,.false.,0.0  
+"LND", "rough_mom",  "", "" ,.false.,0.01 
+"LND", "rough_heat", "", "" ,.false.,0.01 
+"LND", "albedo",     "", "" ,.false.,0.0  
+"LND", "t_flux",     "", "",.false. ,0.0  
+"LND", "q_flux",     "", "",.false. ,0.0  
+"LND", "lw_flux",    "", "",.false. ,0.0  
+"LND", "sw_flux",    "", "",.false. ,0.0  
+"LND", "lprec",      "", "",.false. ,0.0  
+"LND", "fprec",      "", "",.false. ,0.0  
+"LND", "dhdt",       "", "",.false. ,0.0  
+"LND", "dedt",       "", "",.false. ,0.0  
+"LND", "dedq",       "", "",.false. ,0.0  
+"LND", "drdt",       "", "",.false. ,0.0  
+"LND", "drag_q",     "", "",.false. ,0.0  
+"LND", "p_surf",     "", "",.false. ,0.0 

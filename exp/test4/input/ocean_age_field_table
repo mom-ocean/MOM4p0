@@ -1,0 +1,16 @@
+
+"tracer_packages","ocean_mod","ocean_age_tracer"
+
+names = global
+horizontal-advection-scheme = mdfl_sweby
+vertical-advection-scheme = mdfl_sweby
+min_tracer_limit=0.0
+/
+
+"namelists","ocean_mod","ocean_age_tracer/global"
+
+slat = -90.0
+nlat =  90.0
+wlon =   0.0
+elon = 360.0
+/

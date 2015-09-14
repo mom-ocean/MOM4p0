@@ -1,0 +1,332 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocmip2_co2calc_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocmip2_co2calc_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Richard.Slater@noaa.gov">   Richard D. Slater </a>
+<br>
+<b>Reviewers:&nbsp;</b><a href="mailto:John.Dunne@noaa.gov">   John P. Dunne </a>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_tracers">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Surface fCO2 calculation </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   Calculate the fugacity of CO2 at the surface in thermodynamic
+   equilibrium with the current alkalinity (Alk) and total dissolved
+   inorganic carbon (DIC) at a particular temperature and salinity
+   using an initial guess for the total hydrogen
+   ion concentration (htotal) </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>time_manager_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#init_ocmip2_co2calc">init_ocmip2_co2calc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_co2calc">ocmip2_co2calc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#drtsafe">drtsafe</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ta_iter_1">ta_iter_1</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#alloc_ocmip2_co2calc">alloc_ocmip2_co2calc</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="init_ocmip2_co2calc"></a>
+<h4>init_ocmip2_co2calc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize parameters to be used for the calculation of
+   delta co2*.
+   <br>
+<br>
+   INPUT
+   time       = the time when this routine is called (saved so
+   the routine may be called from multiple
+   places, but calculations only performed once)
+   <br>
+<br>
+   imt_in     = i-dimension of the arrays
+   <br>
+<br>
+   km_in      = k-dimension of the arrays
+   <br>
+<br>
+   t          = temperature (degrees C)
+   <br>
+<br>
+   s          = salinity (PSU)
+   <br>
+<br>
+   OUTPUT
+   <br>
+<br>
+   k2         = activity factors for carbonate species
+   <br>
+<br>
+   k2              (see below)
+   <br>
+<br>
+   invtk      = 1/(t+273.15) </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_co2calc"></a>
+<h4>ocmip2_co2calc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Calculate delta co2* from total alkalinity and total CO2 at
+   temperature (t), salinity (s) and "atmpres" atmosphere total pressure.
+   It is assumed that init_ocmip2_co2calc has already been called with
+   the T and S to calculate the various coefficients.
+   <br>
+<br>
+   INPUT
+   <br>
+<br>
+   imt_in     = i-dimension of the arrays
+   <br>
+<br>
+   km_in      = k-dimension of the arrays
+   <br>
+<br>
+   mask       = land mask array (0.0 = land)
+   <br>
+<br>
+   dic_in     = total inorganic carbon (mol/m^3) 
+   where 1 T = 1 metric ton = 1000 kg
+   <br>
+<br>
+   ta_in      = total alkalinity (eq/m^3) 
+   <br>
+<br>
+   pt_in      = inorganic phosphate (mol/m^3) 
+   <br>
+<br>
+   sit_in     = inorganic silicate (mol/m^3) 
+   <br>
+<br>
+   htotallo   = lower limit of htotal range
+   <br>
+<br>
+   htotalhi   = upper limit of htotal range
+   <br>
+<br>
+   htotal     = H+ concentraion
+   <br>
+<br>
+   xco2_in    = atmospheric mole fraction CO2 in dry air (ppmv) 
+   <br>
+<br>
+   atmpres    = atmospheric pressure in atmospheres
+   (1 atm = 1013.25 mbar)
+   <br>
+<br>
+   OUTPUT
+   co2star    = CO2*water (mol/m^3)
+   co2starair = CO2*air (mol/m^3)
+   dco2star   = Delta CO2* (mol/m^3)
+   pco2surf   = oceanic pCO2 (ppmv)
+   <br>
+<br>
+   dpco2      = Delta pCO2, i.e, pCO2ocn - pCO2atm (ppmv)
+   <br>
+<br>
+   IMPORTANT: Some words about units - (JCO, 4/4/1999)
+   <br>
+<br>
+   - Models carry tracers in mol/m^3 (on a per volume basis)
+   <br>
+<br>
+   - Conversely, this routine, which was written by observationalists
+   (C. Sabine and R. Key), passes input arguments in umol/kg  
+   (i.e., on a per mass basis)
+   <br>
+<br>
+   - I have changed things slightly so that input arguments are
+   in mol/m^3,
+   <br>
+<br>
+   - Thus, all input concentrations (dic, ta, pt, and st) should be 
+   given in mol/m^3; output arguments "co2star" and "co2starair"  
+   and "dco2star" are likewise be in mol/m^3.
+   <br>
+<br>
+   FILES and PROGRAMS NEEDED: drtsafe, ta_iter_1 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="drtsafe"></a>
+<h4>drtsafe</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   File taken from Numerical Recipes. Modified  R. M. Key 4/94 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ta_iter_1"></a>
+<h4>ta_iter_1</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   This routine expresses TA as a function of DIC, htotal and constants.
+   It also calculates the derivative of this function with respect to 
+   htotal. It is used in the iterative solution for htotal. In the call
+   "x" is the input value for htotal, "fn" is the calculated value for TA
+   and "df" is the value for dTA/dhtotal </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="alloc_ocmip2_co2calc"></a>
+<h4>alloc_ocmip2_co2calc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   initialize arrays for use in ocmip2_co2calc subroutine </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<!-- END NAMELIST --><a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

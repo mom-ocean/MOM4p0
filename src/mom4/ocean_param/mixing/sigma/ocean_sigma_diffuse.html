@@ -1,0 +1,331 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_sigma_diffuse_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_sigma_diffuse_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Stephen.Griffies@noaa.gov">   Stephen M. Griffies </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_param/mixing/sigma">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Thickness weighted time tendency for tracer from sigma diffusion 
+   model grid cells. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module computes the thickness weighted time tendency for 
+   tracer arising from Laplacian diffusion within the bottom-most 
+   model grid cells. The diffusivity used to determine the strength 
+   of the tendency is generally set to be a function of the local 
+   horizontal grid spacing.  Diffusivity is the sum of an a priori 
+   background plus a velocity dependent diffusivity.  It is large 
+   if there is a heavier parcel living adjacent within the 
+   "sigma layer" above a lighter parcel.  It is small otherwise. 
+   <br>
+<br>
+   The thickness of the "sigma layer" is time independent and 
+   equated to the thickness of the bottom partial cell thickness dht.
+   <br>
+<br>
+   When the logical sigma_tracer_diffusion=.true., other diffusive 
+   fluxes passing across bottom cell boundaries are masked to zero.
+   Generally, sigma_tracer_diffusion=.false. has been found useful. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>      constants_mod<br>   diag_manager_mod<br>            fms_mod<br>    mpp_domains_mod<br>            mpp_mod<br>  ocean_domains_mod<br>  ocean_density_mod<br>ocean_operators_mod<br>    ocean_types_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_sigma_diffuse_init">ocean_sigma_diffuse_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#sigma_diffusion">sigma_diffusion</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_sigma_diffuse_init"></a>
+<h4>ocean_sigma_diffuse_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the sigma diffusion module by 
+   registering fields for diagnostic output and performing some 
+   numerical checks to see that namelist settings are appropriate. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="sigma_diffusion"></a>
+<h4>sigma_diffusion</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   This subroutine computes the thickness weighted time tendency for
+   tracer from sigma diffusion and stores result in trace th_tendency. </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_sigma_diffuse_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>sigma_diffuse_on</tt>
+</dt>
+<dl>   Must be true to use this module. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>tmask_sigma_on</tt>
+</dt>
+<dl>   IF .true. then masks out fluxes passing into the sigma layer, except those 
+   associated with sigma diffusion. Typically set to .false. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>sigma_diffusivity</tt>
+</dt>
+<dl>   Sigma tracer diffusivity for use if not using micom diffusivity. <br>
+<span class="type">[real, units: m^2/sec]</span>
+</dl>
+<dt>
+<tt>sigma_diffusivity_ratio</tt>
+</dt>
+<dl>   When flow along sigma surface is stable (i.e., heavy parcels are below lighter parcels)
+   then sigma diffusivity is reduced by sigma_diffusivity_ratio from the case where 
+   heavy parcels are above lighter parcels. <br>
+<span class="type">[real, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>sigma_thickness_max</tt>
+</dt>
+<dl>   The maximum thickness of the bottom sigma diffusion layer.  
+   If dht &gt; sigma_thickness_max, then bbl_thickness is set to sigma_thickness_max.
+   Otherwise, bbl_thickness=dht. <br>
+<span class="type">[real, units: meter]</span>
+</dl>
+<dt>
+<tt>tracer_mix_micom</tt>
+</dt>
+<dl>   If .true., then the sigma diffusivity is set according to a velocity scale 
+   times the grid spacing. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>vel_micom</tt>
+</dt>
+<dl>   Velocity scale that is used for computing the MICOM diffusivity. <br>
+<span class="type">[real, units: m/sec]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<a name="REFERENCES"></a>
+<hr>
+<h4>REFERENCES</h4>
+<!-- BEGIN REFERENCES -->
+<div>
+<ol>
+<li>   R. Doscher and A. Beckmann
+   Effects of a bottom boundary layer parameterization 
+   in a coarse-resolution model of the North Atlantic Ocean
+   Journal of Atmospheric and Oceanic Technology (1999), vol 17 pages 698--707 </li>
+<li>   A. Beckmann and R. Doscher",
+   A method for improved representation of dense water spreading over 
+   topography in geopotential--coordinate models
+   Journal of Physical Oceanography (1997) vol 27, pages 581--59 </li>
+<li>   S.M. Griffies, M.J. Harrison, and A. Rosati,
+   A Guide to MOM4 for Users and Developers (2002) </li>
+</ol>
+</div>
+<br>
+<!-- END REFERENCES -->
+<a name="COMPILER SPECIFICS"></a>
+<hr>
+<h4>COMPILER SPECIFICS</h4>
+<!-- BEGIN COMPILER SPECIFICS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END COMPILER SPECIFICS -->
+<a name="PRECOMPILER OPTIONS"></a>
+<hr>
+<h4>PRECOMPILER OPTIONS</h4>
+<!-- BEGIN PRECOMPILER OPTIONS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END PRECOMPILER OPTIONS -->
+<a name="LOADER OPTIONS"></a>
+<hr>
+<h4>LOADER OPTIONS</h4>
+<!-- BEGIN LOADER -->
+<div>None.<br>
+<br>
+</div>
+<!-- END LOADER OPTIONS -->
+<a name="TEST PROGRAM"></a>
+<hr>
+<h4>TEST PROGRAM</h4>
+<!-- BEGIN TEST PROGRAM -->
+<div>None.<br>
+</div>
+<br>
+<!-- END TEST PROGRAM -->
+<a name="KNOWN BUGS"></a>
+<hr>
+<h4>KNOWN BUGS</h4>
+<!-- BEGIN KNOWN BUGS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END KNOWN BUGS -->
+<a name="NOTES"></a>
+<hr>
+<h4>NOTES</h4>
+<!-- BEGIN NOTES -->
+<div>   The numerical implementation requires no calls to mpp_update_domains. </div>
+<br>
+<!-- END NOTES -->
+<a name="FUTURE PLANS"></a>
+<hr>
+<h4>FUTURE PLANS</h4>
+<!-- BEGIN FUTURE PLANS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END FUTURE PLANS -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

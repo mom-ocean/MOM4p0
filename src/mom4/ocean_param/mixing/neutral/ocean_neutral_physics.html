@@ -1,0 +1,962 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_neutral_physics_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_neutral_physics_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:stephen.griffies@noaa.gov">   Stephen M. Griffies </a>,&nbsp;
+    <a href="mailto:russell.fiedler@csiro.au">   Russell Fiedler </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_param/mixing/neutral">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Thickness weighted time tendency for tracer 
+   from Laplacian neutral diffusion + Laplacian GM skew-diffusion. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module computes the cell thickness weighted tracer tendency from
+   small angle Laplacian neutral diffusion + Laplacian GM skew-diffusion.
+   It uses the "triad" algorithm also coded in MOM2.2, MOM3, and MOM3.1.
+   The MOM4 algorithm accounts for partial bottom cells and generalized
+   orthogonal horizontal coordinates. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>          constants_mod<br>       diag_manager_mod<br>                fms_mod<br>        mpp_domains_mod<br>                mpp_mod<br>       time_manager_mod<br>      ocean_density_mod<br>      ocean_domains_mod<br>    ocean_operators_mod<br>ocean_sigma_diffuse_mod<br>        ocean_types_mod<br>    ocean_workspace_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_neutral_physics_init">ocean_neutral_physics_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#neutral_physics">neutral_physics</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#neutral_slopes">neutral_slopes</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#neutral_blayer">neutral_blayer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#fz_terms">fz_terms</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#fx_flux">fx_flux</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#fy_flux">fy_flux</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#fz_flux">fz_flux</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#compute_eady_rate">compute_eady_rate</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#compute_baroclinicity">compute_baroclinicity</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#compute_rossby_radius">compute_rossby_radius</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#compute_bczone_radius">compute_bczone_radius</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#compute_diffusivity">compute_diffusivity</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#gm_velocity">gm_velocity</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#slope_function_gm">slope_function_gm</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_neutral_physics_end">ocean_neutral_physics_end</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_neutral_physics_init"></a>
+<h4>ocean_neutral_physics_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the neutral physics module by registering fields for 
+   diagnostic output and performing some numerical checks to see 
+   that namelist settings are appropriate. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="neutral_physics"></a>
+<h4>neutral_physics</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   This function computes the thickness weighted time tendency for tracer 
+   from neutral physics.  Full discussion and details are provided by 
+   Griffies (2004).  Here is a brief summary.  
+   <br>
+<br>
+   ---How the neutral diffusive flux components are computed:
+   <br>
+<br>
+   The vertical flux component is split into diagonal (3,3) and 
+   off-diagonal (3,1) and (3,2) terms. The off-diagonal (3,1) and (3,2) 
+   terms are included explicitly in time. The main contribution from the 
+   (3,3) term to the time tendency is included implicitly in time 
+   along with the usual contribution from diapycnal processes 
+   (vertical mixing schemes).  This is the K33_implicit term.
+   This approach is necessary with high vertical resolution, as 
+   noted by Cox (1987).  However, splitting the vertical flux into 
+   an implicit and explicit piece compromises the 
+   integrity of the vertical flux component (see Griffies et al. 1998).
+   So to minimize the disparity engendered by this split, the portion of 
+   K33 that can be stably included explicitly in time is computed along 
+   with the (3,1) and (3,2) terms. 
+   <br>
+<br>
+   All other terms in the mixing tensor are included explicitly in time. 
+   <br>
+<br>
+   The off-diagonal terms in the horizontal flux components, and all terms
+   in the vertical flux component, are tapered in regions of steep neutral
+   slope according to the requirements of linear stability.  MOM4 allows for 
+   choice of two tapering schemes:
+   (a) the tanh taper of Danabasoglu and McWilliams (1995)
+   (b) the quadratic scheme of Gerdes, Koberle, and Willebrand (1991)
+   Linear stability is far less stringent on the diagonal (1,1) and (2,2)
+   part of the horizontal flux.  Indeed, these terms in practice need
+   not be tapered in steep sloped regions. The namelist 
+   neutral_taper_diagonal=.false. keeps the diagnonal terms maintained 
+   for all neutral slopes. This approach assists in reducing numerical
+   noise in regions where the physical system experiences a lot of
+   diapycnal mixing anyhow. 
+   <br>
+<br>
+   ---How the skew diffusive flux components are computed:
+   <br>
+<br>
+   The GM skew flux components are purely off-diagonal.  
+   They are generally tapered when neutral slope 
+   is large (neutral_physics_simple=.false).
+   Doing so maintains a nontrivial GM slumping effect even when the 
+   neutral slopes are vertical.  The alternative neutral_physics_simple=.true.
+   is the approach used in MOM3, whereby GM effects are removed 
+   in steep sloped regions.  neutral_physics_simple=.false. is 
+   less efficient, but has been seen to yield superior simulations.
+   <br>
+<br>
+   Comments: Much research as of 2003-2004 aims to clarify the 
+   schemes used to meld neutral physics with physics occuring 
+   in steep sloped regions (i.e., boundary layers). Methods used
+   in mom4 are not expected to be the final word on these matters.
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="neutral_slopes"></a>
+<h4>neutral_slopes</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the neutral slopes for the triads associated 
+   with the vertical flux component.  No tapering applied here. 
+   Array tensor_31 initially holds the x-slope used for flux component fz.
+   Array tensor_32 initially holds the y-slope used for flux component fz. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="neutral_blayer"></a>
+<h4>neutral_blayer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the boundary layer as determined by 
+   1. steep neutral slopes
+   2. depth within which typical mesoscale eddies are partially outcropped
+   3. depth within which vertical mixing scheme (e.g., kpp) computes a boundary layer
+   <br>
+<br>
+   Note: Only consider surface boundary layers here.  
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="fz_terms"></a>
+<h4>fz_terms</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the tracer independent pieces of the vertical 
+   flux component. As a result of this routine, 
+   Array tensor_31 = x-diffusivity*slope (m^2/sec) for fz
+   Array tensor_32 = y-diffusivity*slope (m^2/sec) for fz 
+   <br>
+<br>
+   K33 is the (3,3) term in small angle Redi diffusion tensor.
+   It is broken into an explicit in time piece and implicit 
+   in time piece.  
+   <br>
+<br>
+   K33 has units m^2/sec.
+   <br>
+<br>
+   Also will compute the squared Eady growth rate, with the maximum slope
+   contributing to this growth rate set by smax. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="fx_flux"></a>
+<h4>fx_flux</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the zonal neutral physics tracer flux component.
+   Compute this component for all tracers at level k.
+   fx has physical dimensions (area*diffusivity*tracer gradient) </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="fy_flux"></a>
+<h4>fy_flux</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the meridional neutral physics tracer flux component.
+   Compute this component for all tracers at level k.
+   fy has physical dimensions (area*diffusivity*tracer gradient) </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="fz_flux"></a>
+<h4>fz_flux</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the vertical neutral physics tracer flux component.
+   Compute this component for all tracers at level k.
+   Surface and bottom boundary condition fz(k=0)=fz(k=kmt(i,j))=0
+   fz has physical dimensions (diffusivity*tracer gradient) (usual flux units) </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="compute_eady_rate"></a>
+<h4>compute_eady_rate</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Finish computing eady growth rate. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="compute_baroclinicity"></a>
+<h4>compute_baroclinicity</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Finish computing baroclinicity, which is defined to be the vertically
+   averaged magnitude of the horizontal density gradient. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="compute_rossby_radius"></a>
+<h4>compute_rossby_radius</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the first baroclinic Rossby radius of deformation. 
+   Employ WKB approach described by Chelton et al.  In particular, 
+   use formulae (2.2), (2.3a) and (2.3b) from their paper. 
+   <br>
+<br>
+   Place a max and min value on the Rossby radius, as such is useful
+   for computing the diffusivity as well as for the sine_taper scheme.  
+   <br>
+<br>
+   Compute buoyancy frequency in terms of vertical gradient of 
+   locally referenced potential density.  Place the reference point
+   at the interface between the tracer cells, which is also where 
+   the vertical derivative of neutral density is located.  This amounts 
+   to a centered difference computation similar to that used by 
+   Chelton et al. equation (B.4). </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="compute_bczone_radius"></a>
+<h4>compute_bczone_radius</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes the radius of the baroclinic zone in a manner 
+   suggested by the Hadley Centre approach (Malcolm Roberts, personal 
+   communication).  Algorithm was used in MOM3. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="compute_diffusivity"></a>
+<h4>compute_diffusivity</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes flow dependent diffusivity.
+   Allow for an added dimensionless tuning factor as well as a 
+   minimum and maximum diffusivity. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="gm_velocity"></a>
+<h4>gm_velocity</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subroutine computes GM eddy-induced velocity field for diagnostics.
+   Compute ustar and vstar at U-cell point, and wstar at T-cell bottom.   
+   <br>
+<br>
+   Do a two-point average rather than more democratic four-point avg
+   in order to avoid having to call mpp_update domains on tensor_31 and 
+   tensor_32.  The 0.5 factor is due to the two-point average.
+   <br>
+<br>
+   Note that this algorithm is ad hoc.  Researchers interested in this 
+   field may wish to test alternatives. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="slope_function_gm"></a>
+<h4>slope_function_gm</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Function for defining effective slope in diagnostic GM velocity
+   calculation. Used only for diagnostic purposes. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_neutral_physics_end"></a>
+<h4>ocean_neutral_physics_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Write to restart for case when running with agm_closure </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_neutral_physics_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>neutral_physics_on</tt>
+</dt>
+<dl>   Must be true to use this module. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>neutral_physics_debug</tt>
+</dt>
+<dl>   For printing starting and ending checksums for restarts <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>diffusion_all_explicit</tt>
+</dt>
+<dl>   To compute all contributions from neutral diffusion explicitly in time, including
+   the K33 diagonal piece.  This approach is available only when have small time 
+   steps and/or running with just a single tracer.  It is for testing purposes. <br>
+<span class="type">[logical, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>neutral_physics_limit</tt>
+</dt>
+<dl>   When tracer falls outside a specified range, revert to horizontal 
+   diffusive fluxes at this cell. This is an ad hoc and incomplete attempt
+   to maintain monotonicity with the neutral physics scheme. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>tmask_neutral_on</tt>
+</dt>
+<dl>   If .true. then this logical reduces the neutral fluxes to 
+   horizontal/vertical diffusion next to boundaries.  
+   This approach has been found to reduce spurious 
+   extrema resulting from truncation of triads used to compute 
+   a neutral flux component. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>dm_taper</tt>
+</dt>
+<dl>   Set to true to use the tanh tapering scheme of Danabasoglu and McWilliams.
+   Default is true. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>gkw_taper</tt>
+</dt>
+<dl>   Set to true to use the quadradic tapering scheme of Gerdes, Koberle, and Willebrand.
+   Default is false. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>smax</tt>
+</dt>
+<dl>   Value of the maximum neutral direction slope above which the neutral fluxes are 
+   either tapered to zero or saturated.  Typical value is smax=0.01 or smaller. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>swidth</tt>
+</dt>
+<dl>   Width in slope over which use tanh to taper fluxes in steep sloped regions. 
+   Typical value swidth=0.1*smax <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>aredi</tt>
+</dt>
+<dl>   Neutral diffusivity used for experiments using a constant diffusivity. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>agm</tt>
+</dt>
+<dl>   GM-skew diffusivity used for experiments using a constant diffusivity. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>agm_lat_zones</tt>
+</dt>
+<dl>   If true, will set agm_array as constant within two latitudinal zones.  
+   The idea is that one may wish to use a larger agm in the ACC than 
+   elsewhere. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>agm_lat_zones_boundary</tt>
+</dt>
+<dl>   Boundary between agm in the south and north zones. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>agm_lat_zones_ratio</tt>
+</dt>
+<dl>   Ratio between the large agm used in the southern latitudinal zone
+   to that used in the north.  
+   agm_array(north) = agm
+   agm_array(south) = agm*agm_lat_zones_ratio <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>tracer_mix_micom</tt>
+</dt>
+<dl>   If .true., then the GM-skew diffusivity is set according to a velocity scale 
+   times the grid spacing. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>vel_micom</tt>
+</dt>
+<dl>   Velocity scale that is used for computing the MICOM diffusivity. <br>
+<span class="type">[real, units: m/sec]</span>
+</dl>
+<dt>
+<tt>neutral_horz_mix_bdy</tt>
+</dt>
+<dl>   If .true., then use a horizontal diffusivity in the neutral boundary layer. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>vel_micom_bdy</tt>
+</dt>
+<dl>   Velocity scale that is used for computing the MICOM horizontal diffusivity 
+   within the neutral boundary layer. <br>
+<span class="type">[real, units: m/sec]</span>
+</dl>
+<dt>
+<tt>ah_bdy</tt>
+</dt>
+<dl>   Constant horizontal diffusivity for the boundary layer. <br>
+<span class="type">[real, units: m^2/sec]</span>
+</dl>
+<dt>
+<tt>bryan_lewis_aredi</tt>
+</dt>
+<dl>   Set bryan_lewis_aredi=.true. when want to have aredi a function of depth
+   according to the Bryan and Lewis (1979) profile. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>ahs</tt>
+</dt>
+<dl>   ahs = adjustable parameter at the surface for bryan_lewis_aredi <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>ahb</tt>
+</dt>
+<dl>   ahb = adjustable parameter at the bottom for bryan_lewis_aredi <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>agm_closure</tt>
+</dt>
+<dl>   If .true. then will compute the GM-skew diffusivity as a function of the flow.
+   The length scale is determined by the Rossby radius and the time scale is 
+   determined by the Eady growth rate.  Diffusivities are depth independent. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>agm_closure_max</tt>
+</dt>
+<dl>   Maximum GM diffusivity allowed when using agm_closure=.true. <br>
+<span class="type">[real, units: m^2/sec]</span>
+</dl>
+<dt>
+<tt>agm_closure_min</tt>
+</dt>
+<dl>   Minimum GM diffusivity allowed when using agm_closure=.true. <br>
+<span class="type">[real, units: m^2/sec]</span>
+</dl>
+<dt>
+<tt>agm_closure_scaling</tt>
+</dt>
+<dl>   Dimensionless tuning parameter for computing flow dependent diffusivities. <br>
+<span class="type">[logical, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>agm_closure_upper_depth</tt>
+</dt>
+<dl>   Upper depth where start the depth integration to compute the Eady 
+   growth rate and/or baroclinicity. <br>
+<span class="type">[real, units: m]</span>
+</dl>
+<dt>
+<tt>agm_closure_lower_depth</tt>
+</dt>
+<dl>   Deeper depth where finish the depth integration to compute the Eady 
+   growth rate and/or baroclinicity. <br>
+<span class="type">[real, units: m]</span>
+</dl>
+<dt>
+<tt>agm_closure_baroclinic</tt>
+</dt>
+<dl>   For computing the agm coefficient using only the vertically
+   averaged magnitude of the horizontal density gradient 
+   (i.e., the "baroclinicity"). <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>agm_closure_buoy_freq</tt>
+</dt>
+<dl>   For computing the agm coefficient using only the vertically
+   averaged horizontal density gradient, use a buoyancy frequency,
+   which is fixed for all space-time. <br>
+<span class="type">[real, units: sec^-1]</span>
+</dl>
+<dt>
+<tt>agm_closure_length_fixed</tt>
+</dt>
+<dl>   Used fixed length scale for computing agm_closure diffusivity <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>agm_closure_length</tt>
+</dt>
+<dl>   Fixed length scale for use with agm_closure_fixed_length <br>
+<span class="type">[real, units: meter]</span>
+</dl>
+<dt>
+<tt>agm_closure_length_rossby</tt>
+</dt>
+<dl>   For computing the agm_closure length scale according to Rossby radius. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>agm_closure_length_bczone</tt>
+</dt>
+<dl>   For computing the agm_closure length scale according to radius of baroclinic zone. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>bczone_max_pts</tt>
+</dt>
+<dl>   Max number of horizontal grid points for use in computing the baroclinic zone radius. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>agm_closure_bczone_crit_rate</tt>
+</dt>
+<dl>   Critical growth rate for determining width of the baroclinic zone. <br>
+<span class="type">[real, units: sec^-1]</span>
+</dl>
+<dt>
+<tt>agm_closure_growth_scale</tt>
+</dt>
+<dl>   Dimensionless scaling used to set a maximum for agm_growth. <br>
+<span class="type">[real, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>rossby_radius_max</tt>
+</dt>
+<dl>   Maximum Rossby Radius used for agm_closure_length_rossby and 
+   the sine_taper scheme. Default = 100e3 m. <br>
+<span class="type">[real, units: meter]</span>
+</dl>
+<dt>
+<tt>rossby_radius_min</tt>
+</dt>
+<dl>   Minimum Rossby Radius used for agm_closure_length_rossby and 
+   the sine_taper scheme. Default = 15e3 m. <br>
+<span class="type">[real, units: meter]</span>
+</dl>
+<dt>
+<tt>neutral_physics_simple</tt>
+</dt>
+<dl>   If .true. then must have aredi=agm.  The horizontal flux components are then 
+   computed as horizontal downgradient diffusive fluxes regardless the neutral slope.
+   This approach improves algorithm efficiency.  However, a .true. setting precludes
+   being able to have the GM-skew fluxes remain active in the steep sloped regions,
+   thus shutting off their effects to reduce the slopes of isopycnals in convective and 
+   mixed layer regimes. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>neutral_linear_gm_taper</tt>
+</dt>
+<dl>   If .true. then with neutral_physics_simple=.false., will linearly taper GM
+   skew fluxes towards the surface within regions of steep neutral slopes.  
+   This approach leads to a constant horizontal eddy-induced velocity in 
+   the steeply sloping regions. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>neutral_taper_diagonal</tt>
+</dt>
+<dl>   For cases with neutral_physics_simple=.false., then neutral_taper_diagonal=.true.
+   will taper the diagonal pieces of the horizontal flux components when neutral slopes
+   are steep. With neutral_taper_diagonal=.false., then the horizontal flux components will 
+   remain enabled for all slopes, thus producing horizontal downgradient diffusion in 
+   regions of vertical neutral directions. <br>
+<span class="type">[logical, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>neutral_sine_taper</tt>
+</dt>
+<dl>   If .true. then with neutral_physics_simple=.false., will apply a sine-taper 
+   to GM and neutral diffusive fluxes in regions where the penetration depth 
+   of eddies is deeper than the grid point. This method is essential for 
+   fine vertical resolution grids. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>gm_velocity_save</tt>
+</dt>
+<dl>   If .true. then will compute the GM eddy-induce advection velocity components
+   for purposes of diagnostics.  This computation is nontrivial as it requires 
+   some extra calls to mpp_update_domains.  The algorithm used to compute the 
+   velocities may require modifications for efficiency, and suggestions are welcome. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>neutral_blayer_diagnose</tt>
+</dt>
+<dl>   Diagnose properties of the neutral physics boundary layer, whether have 
+   neutral_linear_gm_taper or neutral_sine_taper true or not. <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<a name="REFERENCES"></a>
+<hr>
+<h4>REFERENCES</h4>
+<!-- BEGIN REFERENCES -->
+<div>
+<ol>
+<li>   D.B. Chelton,  R.A. deSzoeke, M.G. Schlax, K.E. Naggar, N. Siwertz
+   Geographical Variability of the First Baroclinic Rossby Radius of Deformation
+   Journal of Physical Oceanography (1998) vol 28 pages 433-460 </li>
+<li>   G. Danabasoglu and J. C. McWilliams
+   Sensitivity of the global ocean circulation to 
+   parameterizations of mesoscale tracer transports
+   Journal of Climate (1995) vol 8 pages 2967--2987 </li>
+<li>   S.M. Griffies, A. Gnanadesikan, R.C. Pacanowski, V. Larichev, 
+   J.K. Dukowicz,  and R.D. Smith
+   Isoneutral diffusion in a z-coordinate ocean model
+   Journal of Physical Oceanography (1998) vol 28 pages 805-830 </li>
+<li>   S.M. Griffies 
+   The Gent-McWilliams Skew-flux 
+   Journal of Physical Oceanography (1998) vol 28 pages 831-841 </li>
+<li>   S.M. Griffies 
+   Fundamentals of Ocean Climate Models (2003)
+   NOAA/Geophysical Fluid Dynamics Laboratory </li>
+<li>   I.M. Held and V.D. Larichev
+   A scaling theory for horizontally homogeneous baroclinically 
+   unstable flow on a beta plane
+   Journal of Atmospheric Sciences (1996) vol 53 pages 946-952 </li>
+<li>   M. Visbeck, J.C. Marshall, T. Haine and M. Spall
+   Specification of eddy transfer coefficients in coarse resolution ocean
+   circulation models
+   Journal of Physical Oceanography (1997) vol 27 pages 381--402 </li>
+</ol>
+</div>
+<br>
+<!-- END REFERENCES -->
+<a name="COMPILER SPECIFICS"></a>
+<hr>
+<h4>COMPILER SPECIFICS</h4>
+<!-- BEGIN COMPILER SPECIFICS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END COMPILER SPECIFICS -->
+<a name="PRECOMPILER OPTIONS"></a>
+<hr>
+<h4>PRECOMPILER OPTIONS</h4>
+<!-- BEGIN PRECOMPILER OPTIONS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END PRECOMPILER OPTIONS -->
+<a name="LOADER OPTIONS"></a>
+<hr>
+<h4>LOADER OPTIONS</h4>
+<!-- BEGIN LOADER -->
+<div>None.<br>
+<br>
+</div>
+<!-- END LOADER OPTIONS -->
+<a name="TEST PROGRAM"></a>
+<hr>
+<h4>TEST PROGRAM</h4>
+<!-- BEGIN TEST PROGRAM -->
+<div>None.<br>
+</div>
+<br>
+<!-- END TEST PROGRAM -->
+<a name="KNOWN BUGS"></a>
+<hr>
+<h4>KNOWN BUGS</h4>
+<!-- BEGIN KNOWN BUGS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END KNOWN BUGS -->
+<a name="NOTES"></a>
+<hr>
+<h4>NOTES</h4>
+<!-- BEGIN NOTES -->
+<div>   This module represents perhaps the most complicated piece of code in 
+   mom4. It is strongly suggested that some time be taken prior to 
+   making major changes. If you find problems, either in documentation, 
+   algorithm, or implementation, please feel free to contact Griffies. <br>
+<br>   Numerical implementation follows the triad approach documented in the
+   references and implemented in MOM2 and MOM3. <br>
+<br>   Diffusivities can be flow dependent, where the length scale is related
+   to the first baroclinic Rossby radius and the time scale to the Eady
+   growth rate.  Within 5deg of equator, use is made of the equatorial
+   Rossby radius. Length scale can also be determined by the width of 
+   the baroclinic zone, as done in the Hadley Centre model. 
+   If the namelist settings agm and aredi are not equal,
+   then flow dependent diffusivities will be computed ONLY for the GM 
+   skew-fluxes. <br>
+<br>   neutral_physics_simple=.true. requires the neutral diffusive
+   diffusivity to be set equal to the GM skew-diffusive diffusivity
+   (aredi=agm).  neutral_physics_simple=.true. results in down-gradient  
+   horizontal flux components. This setting reduces the overall cost 
+   of the neutral physics scheme significantly. <br>
+<br>   In steep slope regions, neutral fluxes are generally tapered to zero
+   with the tanh taper of Danabasoglu and McWilliams (1995) or the 
+   quadratic scheme of Gerdes, Koberle, and Willebrand.  However, if
+   neutral_physics_simple=.false., the GM skew-diffusive fluxes 
+   can remain nonzero if have neutral_linear_gm_taper=.true. </div>
+<br>
+<!-- END NOTES -->
+<a name="FUTURE PLANS"></a>
+<hr>
+<h4>FUTURE PLANS</h4>
+<!-- BEGIN FUTURE PLANS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END FUTURE PLANS -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

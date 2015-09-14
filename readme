@@ -1,0 +1,31 @@
+
+Where to start
+~~~~~~~~~~~~~~
+A good place to start is the "doc" directory, where you
+will find "quickstart" and "user" guides for the atmospheric
+dynamical cores.  Additional files in the "doc" directory provide
+links to web-based documentation that accompanies the source code.
+
+
+Summary of directory contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bin/
+     -- mkmf script for creating Makefiles
+     -- template files for the mkmf script
+     -- assorted other scripts
+
+doc/ 
+     -- quickstart guide
+     -- user's guide
+
+exp/
+     -- all MOM4 experiments (test cases)
+
+src/   
+     -- source code for all models
+
+src/postprocessing/
+    -- source code for postprocessing programs
+
+src/preprocessing/
+    -- source code for preprocessing programs

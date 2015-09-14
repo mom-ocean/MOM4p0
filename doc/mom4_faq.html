@@ -1,0 +1,2038 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta name="generator" content=
+    "HTML Tidy for Linux/x86 (vers 1st September 2002), see www.w3.org">
+    <meta http-equiv="Content-Type" content=
+    "text/html; charset=ISO-8859-1">
+    <title>MOM4 Frequently Asked Questions</title>
+    <link rel="stylesheet" href=
+    "http://www.gfdl.noaa.gov/~fms/style/docbook.css" type=
+    "text/css">
+    <meta name="generator" content=
+    "DocBook XSL Stylesheets V1.64.1">
+    <meta name="description" content="">
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084"
+  alink="#0000FF">
+    <div class="article" lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a name="id2398382"></a>MOM4
+            Frequently Asked Questions</h1>
+          </div>
+          <div>
+            <div class="author">
+              <h3 class="author"><span class=
+              "firstname">Giang</span> <span class=
+              "surname">Nong</span></h3>
+              <a href="" onclick=
+              "javascript:window.location='mai'+'lt'+'o:'+'Giang.Nong'+'%40'+'noaa.gov'"
+               onmouseover=
+              "javascript:window.status='send ema'+'il';return true;"
+               onmouseout=
+              "javascript:window.status='';return true;">Giang.Nong<img
+               border="0" src=
+              "http://www.gfdl.noaa.gov/fms/images/atgreen.png"
+              alt="&amp;#64;" style=
+              "display:inline; height:.8em;">noaa.gov</a>
+            </div>
+          </div>
+          <div>
+            <div class="abstract">
+              <p class="title"><b>Abstract</b></p>
+              This page contains questions that have arisen when
+              using MOM4. Some questions are from mom4p0 mailing
+              list, others are points that are worth highlighting
+              from the User Guide. These questions and answers can
+              be of some assistance especially to new MOM4 users.
+              Please refer also to the material in the MOM4 online
+              Users Guide and comments within the source code to
+              get further information about setting up, running,
+              and debugging experiments.
+            </div>
+          </div>
+        </div>
+        <hr>
+      </div>
+      <div class="qandaset">
+        <dl>
+          <dt>1. <a href="#id2500039">Code/data
+          distribution</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2500541">Is there any non-web
+              based portal I could access like ftp, sftp, or scp?
+              It would be nice to download the code without
+              accessing the web</a></dt>
+            </dl>
+          </dd>
+          <dt>2. <a href="#id2488865">MOM4 test cases</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2488872">How seriously should I
+              take the mom4-test cases?</a></dt>
+              <dt>Q: <a href="#id2488909">In test5, I notice axes X
+              and Y in files are not the same between files
+              ice_month.nc and ocean_month.nc, why?</a></dt>
+              <dt>Q: <a href="#id2446692">In test4, I am trying to
+              apply open boundary conditions to eastern and
+              southern region. In the namelist how can I define the
+              is, ie, js, and je points?</a></dt>
+              <dt>Q: <a href="#id2446746">I run test4 with
+              non_boussinesq=true, then I got this error:
+              "fms_io,read_data_3d_new:field rho_nbt NOT found in
+              file INPUT/ocean_density.res.nc" what could be the
+              problem here? can test4 run with non_boussinesq
+              option?</a></dt>
+              <dt>Q: <a href="#id2446801">On my Beowulf machine
+              using IFC test4 can be run OK with 4 processor, but
+              using just 1 processor lead to crash, any
+              solution?</a></dt>
+            </dl>
+          </dd>
+          <dt>3. <a href="#id2446826">Setting up a new
+          experiment</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2446832">I want to generate a grid
+              that is similar to the grid used in test1. I use
+              ocean_grid_generator.csh. What is the recommended
+              setting?</a></dt>
+              <dt>Q: <a href="#id2446868">I have started a new
+              experiment that is similar to one of the mom4 test
+              cases, can I simply use the namelists in the input
+              directory of mom4 test?</a></dt>
+              <dt>Q: <a href="#id2446915">Can I simply use the
+              diag_table in the input directory of mom4
+              test?</a></dt>
+              <dt>Q: <a href="#id2446942">Can I simply use the
+              field_table in the input directory of mom4
+              test?</a></dt>
+              <dt>Q: <a href="#id2446974">Can I simply use the
+              data_table in the input directory of mom4
+              test?</a></dt>
+              <dt>Q: <a href="#id2447003">Can I simply use the
+              forcing datasets of mom4 test?</a></dt>
+              <dt>Q: <a href="#id2447036">Can I use the initial
+              conditions from a mom4 test?</a></dt>
+              <dt>Q: <a href="#id2447069">Which tools should I use
+              to generate my own forcing data sets?</a></dt>
+              <dt>Q: <a href="#id2447155">Can I use the datasets of
+              mom4 test as input for the regrid procedure, or do I
+              need to use original lat-lon datasets?</a></dt>
+              <dt>Q: <a href="#id2447184">Where can I obtain the
+              datsets on lon/lat grid as input for
+              regridding?</a></dt>
+              <dt>Q: <a href="#id2447211">When do I need to
+              generate an exchange grid?</a></dt>
+              <dt>Q: <a href="#id2447254">How do I generate the
+              exchange grid?</a></dt>
+              <dt>Q: <a href="#id2447343">We are trying to set up a
+              regional model for Indian ocean using mom4 in Origin
+              3000. On integration model blows with CFL violation
+              and gives an error message in fm.out file =&gt;Error:
+              Land cell at (i,j,k) = ( 1, 1, 1), (lon,lat,dpt) = (
+              30.25, -29.75, 5.m) has tracer(n= 1) = NaN What may
+              be the reason?</a></dt>
+              <dt>Q: <a href="#id2447429">I try to perform a
+              spin-up run from rest with temperature and salinity
+              initial condition from Levitus, but I often have
+              systematic violations of CFL condition associated
+              with the vertical velocity. Any suggestion?</a></dt>
+              <dt>Q: <a href="#id2447540">I generated a file
+              (data.nc) and use the file as inital condition.
+              However, time_interp_external.F90 can not read my
+              data.nc file and issue error messaage: "file/field
+              INPUT/data.nc/temp couldnt recognize axis atts in
+              time_interp_external".</a></dt>
+              <dt>Q: <a href="#id2447569">I have problem with my
+              data because the calendar attribute is missing.
+              However, I do not have NCO library to use the ncatted
+              tool. Is there any way to add calendar attribute
+              without NCO command?</a></dt>
+              <dt>Q: <a href="#id2447606">I tried to use daily
+              forcing to run MOM4, then I found that the routine
+              "test_time_interp_ext" actually interpolates the
+              daily data to the monthly data by assuming each month
+              has 31 days. If MOM4 code does the same thing as the
+              routine "test_time_interp_ext", then there's no
+              difference to input daily forcing or monthly forcing.
+              Am I correct?</a></dt>
+              <dt>Q: <a href="#id2447637">The routine
+              "test_time_interp_ext" reads in the times as the
+              indices. So, it doesn't matter if the "time" starts
+              from 1 to 365 ("days since ....") or the "time"
+              starts from "17216112" to "17224848" ('hours since
+              ...'), which is the case for the daily surface flux
+              data from NCAR/NCEP reanalysis. Well, it turned out
+              that the test_time_interp_ext routine always assumes
+              that the time for NCAR/NCEP reanalysis data starts
+              from previous year at 12/18, no matter of what. While
+              the correct start time for these data should be at
+              1/1 of current year.</a></dt>
+            </dl>
+          </dd>
+          <dt>4. <a href="#id2447720">Issues with tables</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2447727">What is the use of
+              data_table?</a></dt>
+              <dt>Q: <a href="#id2447752">What is the use of
+              diag_table?</a></dt>
+              <dt>Q: <a href="#id2441391">What is the significance
+              of the time at the top of the diag_table? How does
+              this time interact with the time used in the
+              model?</a></dt>
+              <dt>Q: <a href="#id2441452">I have error in
+              time_manager: "FATAL from PE 0: time_manager: Invalid
+              day in set_date_julian" what could be the
+              reason?</a></dt>
+            </dl>
+          </dd>
+          <dt>5. <a href="#id2441479">Using the runscripts</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2441486">Are the compile and run
+              scripts platform dependent? What do I need to change
+              when I go from one platform to another?</a></dt>
+              <dt>Q: <a href="#id2441528">How do I set the length
+              of run?</a></dt>
+              <dt>Q: <a href="#id2441563">How do I set the number
+              of processors?</a></dt>
+              <dt>Q: <a href="#id2441592">What is STATIC option,
+              how do I use this option?</a></dt>
+              <dt>Q: <a href="#id2441630">How can I change the time
+              step of the model?</a></dt>
+              <dt>Q: <a href="#id2441695">How do I view the model
+              output?</a></dt>
+              <dt>Q: <a href="#id2441730">What should I do to run a
+              test case using restart data?</a></dt>
+              <dt>Q: <a href="#id2441772">How do I know if two runs
+              using different number of processors produce
+              identical results?</a></dt>
+              <dt>Q: <a href="#id2441831">Should I care about the
+              contents of the fms.out file</a></dt>
+              <dt>Q: <a href="#id2441885">What does mppnccombine
+              do? How can I use it</a></dt>
+            </dl>
+          </dd>
+          <dt>6. <a href="#id2441923">Some questions about model
+          setup and namelists</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2441930">How serious should I take
+              the warning:"WARNING from ocean_freesurf_mod: eta_t(
+              26 , 86 )= -1. has been truncated to 1."? does it
+              affect the model outcome?</a></dt>
+              <dt>Q: <a href="#id2441959">I want to apply realistic
+              forcing to the model, what may be the unit to the
+              water flux (lprec)?</a></dt>
+              <dt>Q: <a href="#id2441996">The model seems to have
+              ended naturally without errors, however model results
+              (history files) contain only zeroes. What could be
+              the reason here?</a></dt>
+              <dt>Q: <a href="#id2442023">How serious should I take
+              this warning in fms.out: WARNING from PE 1:
+              ==&gt;Warning: nxland &gt; 0, but
+              use_xlandmix=.false. Remove xland table entries to
+              reduce memory</a></dt>
+              <dt>Q: <a href="#id2442058">I run of MOM4 on a simple
+              rectangular grid, with idealized restoring boundary
+              conditions. My temperature field looks fine for the
+              whole domain except j=1, where temp[j=1] = 0.
+              Why?</a></dt>
+              <dt>Q: <a href="#id2442095">I want to do an
+              experiment with an inversion, so I try to turn off
+              the convection by setting the relevant namelists as
+              follows: convect_ncon=.false.,
+              convect_full_scalar=.false.,
+              convect_full_vector=.false.
+              convective_adjust_on=.false., use_frazil = .false.,
+              bryan_lewis_diffusivity=.false. I still get an
+              overturing when the horizontal velocity is non-zero,
+              why?</a></dt>
+              <dt>Q: <a href="#id2442137">I have turned off frazil
+              by setting use_frazil = .false. and yet fms.out says:
+              Processing diag tracer frazil. Why? Am I wasting CPU
+              time?</a></dt>
+              <dt>Q: <a href="#id2442170">Mom4 offers Bryan-Lewis
+              vertical mixing which may vary from equator to the
+              poles. However, the coefficients afkph_00 and
+              afkph_90 ... defined in ocean_vert_mix.f90 are the
+              same at the equator and the poles. Is this an
+              error?</a></dt>
+            </dl>
+          </dd>
+          <dt>7. <a href="#id2442200">IBM</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2442207">When I run the
+              "run_mom4_test1" script on IBM machine, it stopped at
+              the link stage with error message "ld: 0711-317
+              ERROR: Undefined symbol: .flush".</a></dt>
+            </dl>
+          </dd>
+          <dt>8. <a href="#id2442232">SGI Irix</a></dt>
+          <dd>
+            <dl>
+              <dt>Q: <a href="#id2442239">I use SGI and I have
+              problem compiling and linking memuse.c, here is the
+              error message: ld64: FATAL 12 : Expecting n64
+              objects: memuse.o is n32. *** Error code 2
+              (bu21)</a></dt>
+            </dl>
+          </dd>
+        </dl>
+        <table border="0" summary="Q and A Set">
+          <col align="left" width="1%">
+          <tbody>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2500039"></a>
+                <h3 class="title"><a name="id2500039"></a>1.
+                Code/data distribution</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2500541">Is there any non-web
+                  based portal I could access like ftp, sftp, or
+                  scp? It would be nice to download the code
+                  without accessing the web</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2500541"></a><a name=
+              "id2500545"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Is there any non-web based portal I could access
+                like ftp, sftp, or scp? It would be nice to
+                download the code without accessing the web</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Here are a number of things you can try:</p>
+                <p>-- wget, it provides command-line access to the
+                http protocol.</p>
+                <p>-- curl and snarf are two other command-line,
+                script-friendly applications widely available for
+                *NIX machines, allowing the use of a variety of
+                proxies on various ports.</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2488865"></a>
+                <h3 class="title"><a name="id2488865"></a>2. MOM4
+                test cases</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2488872">How seriously should
+                  I take the mom4-test cases?</a></dt>
+                  <dt>Q: <a href="#id2488909">In test5, I notice
+                  axes X and Y in files are not the same between
+                  files ice_month.nc and ocean_month.nc,
+                  why?</a></dt>
+                  <dt>Q: <a href="#id2446692">In test4, I am trying
+                  to apply open boundary conditions to eastern and
+                  southern region. In the namelist how can I define
+                  the is, ie, js, and je points?</a></dt>
+                  <dt>Q: <a href="#id2446746">I run test4 with
+                  non_boussinesq=true, then I got this error:
+                  "fms_io,read_data_3d_new:field rho_nbt NOT found
+                  in file INPUT/ocean_density.res.nc" what could be
+                  the problem here? can test4 run with
+                  non_boussinesq option?</a></dt>
+                  <dt>Q: <a href="#id2446801">On my Beowulf machine
+                  using IFC test4 can be run OK with 4 processor,
+                  but using just 1 processor lead to crash, any
+                  solution?</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2488872"></a><a name=
+              "id2488875"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How seriously should I take the mom4-test
+                cases?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The mom4-test cases are not well tuned models.
+                Hence, they generally will not result in physically
+                meaningful simulations. Additionally, the models
+                may crash if run for longer than suggested in the
+                distributed run scripts. That is, the test cases
+                are supported <span class=
+                "emphasis"><em>ONLY</em></span> for testing the
+                integrity of the code on various platforms (i.e.,
+                does the code compile and run for a few time
+                steps?). <span class="emphasis"><em>PLEASE
+                PLEASE</em></span> do not take the test cases and
+                write papers based on them. We are not providing
+                models--instead we are providing code.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2488909"></a><a name=
+              "id2488912"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>In test5, I notice axes X and Y in files are not
+                the same between files ice_month.nc and
+                ocean_month.nc, why?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The reason is that ice model and ocean model use
+                different axis. The ocean model simply just uses
+                the grid axis gridlon_t/gridlat_t of the grid spec
+                file as the diag axis of the output file. The ice
+                model uses the average of the geographical
+                longitude/latitude average along j-index/i-index.
+                When the grid is tripolar grid, these two will have
+                different axis.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446692"></a><a name=
+              "id2446695"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>In test4, I am trying to apply open boundary
+                conditions to eastern and southern region. In the
+                namelist how can I define the is, ie, js, and je
+                points?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Try the following setting, suppose ni, nj is the
+                grid size:</p>
+                <div class="literallayout">
+                  <p><br>
+                  &nbsp;&amp;ocean_obc_nml<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nobc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;2<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'east',&nbsp;'north'&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;ni-1,&nbsp;1<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;ni-1,&nbsp;ni<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;1,&nbsp;nj-1<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;je&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;nj,&nbsp;nj-1<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'eastern',&nbsp;'northern'<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctrop_min&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;1.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctrop_max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;1.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_relax_eta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.false.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_relax_tracer&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.false.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_tracer_orlanski&nbsp;=&nbsp;.true.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_consider_convu&nbsp;&nbsp;=&nbsp;.true.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_vert_advel_u&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.true.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obc_vert_advel_t&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.true.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debug_obc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.false.&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adjust_topog&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;.true.<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debug_phase_speed&nbsp;&nbsp;&nbsp;=&nbsp;.true.&nbsp;/<br>
+                  &nbsp;</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446746"></a><a name=
+              "id2446749"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I run test4 with non_boussinesq=true, then I got
+                this error: "fms_io,read_data_3d_new:field rho_nbt
+                NOT found in file INPUT/ocean_density.res.nc" what
+                could be the problem here? can test4 run with
+                non_boussinesq option?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>It is probable that you are starting your
+                non-boussinesq run from a restart generated from
+                the Boussinesq. That is the problem. The Boussinesq
+                restart does not have the extra rho_nbt variable
+                saved, so the model bombs when switching to the
+                non-Boussinesq in the middle of your run.</p>
+                <p>Two options:</p>
+                <div class="orderedlist">
+                  <ol type="1">
+                    <li>restart from initial conditions, where the
+                    model will not need the rho_nbt at time-0.</li>
+                    <li>modify the restart file by adding a rho_nbt
+                    variable. To get started, simply let
+                    rho_nbt=1035.</li>
+                  </ol>
+                </div>
+                <p>There is no fundamental reason that test4 cannot
+                run non-Boussinesq.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446801"></a><a name=
+              "id2446804"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>On my Beowulf machine using IFC test4 can be run
+                OK with 4 processor, but using just 1 processor
+                lead to crash, any solution?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>At GFDL we can run test4 using 1 processor after
+                increasing stacksize by the command: unlimit
+                stacksize</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2446826"></a>
+                <h3 class="title"><a name="id2446826"></a>3.
+                Setting up a new experiment</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2446832">I want to generate a
+                  grid that is similar to the grid used in test1. I
+                  use ocean_grid_generator.csh. What is the
+                  recommended setting?</a></dt>
+                  <dt>Q: <a href="#id2446868">I have started a new
+                  experiment that is similar to one of the mom4
+                  test cases, can I simply use the namelists in the
+                  input directory of mom4 test?</a></dt>
+                  <dt>Q: <a href="#id2446915">Can I simply use the
+                  diag_table in the input directory of mom4
+                  test?</a></dt>
+                  <dt>Q: <a href="#id2446942">Can I simply use the
+                  field_table in the input directory of mom4
+                  test?</a></dt>
+                  <dt>Q: <a href="#id2446974">Can I simply use the
+                  data_table in the input directory of mom4
+                  test?</a></dt>
+                  <dt>Q: <a href="#id2447003">Can I simply use the
+                  forcing datasets of mom4 test?</a></dt>
+                  <dt>Q: <a href="#id2447036">Can I use the initial
+                  conditions from a mom4 test?</a></dt>
+                  <dt>Q: <a href="#id2447069">Which tools should I
+                  use to generate my own forcing data
+                  sets?</a></dt>
+                  <dt>Q: <a href="#id2447155">Can I use the
+                  datasets of mom4 test as input for the regrid
+                  procedure, or do I need to use original lat-lon
+                  datasets?</a></dt>
+                  <dt>Q: <a href="#id2447184">Where can I obtain
+                  the datsets on lon/lat grid as input for
+                  regridding?</a></dt>
+                  <dt>Q: <a href="#id2447211">When do I need to
+                  generate an exchange grid?</a></dt>
+                  <dt>Q: <a href="#id2447254">How do I generate the
+                  exchange grid?</a></dt>
+                  <dt>Q: <a href="#id2447343">We are trying to set
+                  up a regional model for Indian ocean using mom4
+                  in Origin 3000. On integration model blows with
+                  CFL violation and gives an error message in
+                  fm.out file =&gt;Error: Land cell at (i,j,k) = (
+                  1, 1, 1), (lon,lat,dpt) = ( 30.25, -29.75, 5.m)
+                  has tracer(n= 1) = NaN What may be the
+                  reason?</a></dt>
+                  <dt>Q: <a href="#id2447429">I try to perform a
+                  spin-up run from rest with temperature and
+                  salinity initial condition from Levitus, but I
+                  often have systematic violations of CFL condition
+                  associated with the vertical velocity. Any
+                  suggestion?</a></dt>
+                  <dt>Q: <a href="#id2447540">I generated a file
+                  (data.nc) and use the file as inital condition.
+                  However, time_interp_external.F90 can not read my
+                  data.nc file and issue error messaage:
+                  "file/field INPUT/data.nc/temp couldnt recognize
+                  axis atts in time_interp_external".</a></dt>
+                  <dt>Q: <a href="#id2447569">I have problem with
+                  my data because the calendar attribute is
+                  missing. However, I do not have NCO library to
+                  use the ncatted tool. Is there any way to add
+                  calendar attribute without NCO command?</a></dt>
+                  <dt>Q: <a href="#id2447606">I tried to use daily
+                  forcing to run MOM4, then I found that the
+                  routine "test_time_interp_ext" actually
+                  interpolates the daily data to the monthly data
+                  by assuming each month has 31 days. If MOM4 code
+                  does the same thing as the routine
+                  "test_time_interp_ext", then there's no
+                  difference to input daily forcing or monthly
+                  forcing. Am I correct?</a></dt>
+                  <dt>Q: <a href="#id2447637">The routine
+                  "test_time_interp_ext" reads in the times as the
+                  indices. So, it doesn't matter if the "time"
+                  starts from 1 to 365 ("days since ....") or the
+                  "time" starts from "17216112" to "17224848"
+                  ('hours since ...'), which is the case for the
+                  daily surface flux data from NCAR/NCEP
+                  reanalysis. Well, it turned out that the
+                  test_time_interp_ext routine always assumes that
+                  the time for NCAR/NCEP reanalysis data starts
+                  from previous year at 12/18, no matter of what.
+                  While the correct start time for these data
+                  should be at 1/1 of current year.</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446832"></a><a name=
+              "id2446835"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I want to generate a grid that is similar to the
+                grid used in test1. I use ocean_grid_generator.csh.
+                What is the recommended setting?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <div class="literallayout">
+                  <p><br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grid_type='hgrid_vgrid_topog'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;topography='rectangular_basin'<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;topog_depend_on_vgrid=.true.&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;topog_fild='OCCAM_p5degree.nc'&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;topog_field='topog'&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fill_first_row=.false.&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kmt_min=2&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filter_topog=.false.&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num_filter_pass=5&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scale_factor=-1<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interp_method='spherical'<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debug=.true.<br>
+                  &nbsp;&nbsp;&nbsp;</p>
+                </div>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446868"></a><a name=
+              "id2446871"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I have started a new experiment that is similar
+                to one of the mom4 test cases, can I simply use the
+                namelists in the input directory of mom4 test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You may need to change coupler_nml dt_ocean if
+                using the <tt class="filename">coupler_main</tt> to
+                drive the ocean, or dt_ocean in ocean_solo_nml if
+                using the <tt class="filename">ocean_solo.F90</tt>
+                to drive the ocean. The model time steps generally
+                need to change when changing grid resolution. Also,
+                if you alter the layout of the parallel processors
+                used to run the model, then you may need to change
+                ocean_model_nml layout.</p>
+                <p>So, in general, the test case namelists will
+                need to be changed both for computational and
+                physical reasons. Please do not assume that all is
+                directly transferrable to your new experiment
+                configuration.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446915"></a><a name=
+              "id2446918"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I simply use the diag_table in the input
+                directory of mom4 test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The diag_table sets up the diagnostics to be
+                saved during the model integration. If you wish to
+                add or remove some of the diagnostics, then the
+                diag_table will need to be changed. mom4 provides
+                numerous possible diagnostics, so do not assume
+                those fields that are enabled in the diag_table
+                examples are all that are available.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446942"></a><a name=
+              "id2446944"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I simply use the field_table in the input
+                directory of mom4 test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The field table sets up certain numerical and
+                initial conditions for the tracer fields. Many
+                different advection algorithms are set here, as
+                well as certain idealized initial conditions (e.g.,
+                constant tracer). The field_table provided in the
+                mom4 tests may happen to be fine for your purposes.
+                But such assumption is not guaranteed.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2446974"></a><a name=
+              "id2446976"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I simply use the data_table in the input
+                directory of mom4 test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The data_table is used to bring in forcing
+                fields from datasets to run the ocean model. The
+                file names and the field names of your forcing
+                fields will generally be different from those in
+                the mom4 tests. Remember that if you wish to run
+                with on_grid=.false. for a particular field, then
+                the dataset must be in spherical grid. The exchange
+                grid algorithm assumes that the source field is on
+                a spherical grid as it interpolates to the mom4
+                spherical or tripolar grids.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447003"></a><a name=
+              "id2447005"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I simply use the forcing datasets of mom4
+                test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>If your model grid is the same as that of a mom4
+                test, then the answer is "yes".</p>
+                <p>If your grid is different, then you can use the
+                mom4 forcing data if it is on a spherical grid and
+                you set "on_grid=.false." in the data_table. If the
+                mom4 forcing data is on a tripolar grid, then you
+                cannot use this data since the bilinear horizontal
+                interpolation algorithm can only interpolate from a
+                spherical source grid to a spherical or tripolar
+                target grid. In this case, you must regenerate the
+                forcing by following the prodecure discussed in the
+                preprocessing section of this user guide.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447036"></a><a name=
+              "id2447038"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I use the initial conditions from a mom4
+                test?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>If your model grid is the same as that of the
+                mom4 test, then "yes".</p>
+                <p>If your grid is different, then "no". You must
+                generate the initial conditions on the model grid
+                prior to running. Note that if one wishes to start
+                the model with constant tracers, then it is
+                possible to do so via the appropriate setting in
+                the field_table. More nontrivial initial conditions
+                must be generated from either one of the
+                idealized_ic in the preprocessing portion of the
+                mom4 distribution, or by remapping realistic fields
+                onto the model grid using the remap_3d
+                functionality (again in the preprocessing
+                code).</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447069"></a><a name=
+              "id2447072"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Which tools should I use to generate my own
+                forcing data sets?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>All forcing data can be mapped onto the model
+                grid once the grid_spec.nc file has been
+                generated.</p>
+                <p>a) Idealized 3-D data (initial conditions) can
+                be generated through <tt class=
+                "filename">preprocessing/mom4_prep/idealized_ic</tt></p>
+                <p>b) Realistic 3-D data (initial condition) can be
+                generated through <tt class=
+                "filename">preprocessing/regrid_3d</tt> when the
+                source data is on lon/lat grid.</p>
+                <p>c) Idealized 2-D forcing data can be generated
+                through preprocessing/mom4_prep/idealized_bc. These
+                idealized forcing data will be placed in the files
+                <tt class="filename">temp_sfc_restore.nc,
+                salt_sfc_restore.nc, tau.nc and
+                water_flux.nc</tt>.</p>
+                <p>d) Realistic 2-D forcing data can be generated
+                through preprocessing/regrid_2d when the input data
+                is on lon/lat grid.</p>
+                <p>e) When the input dat is on tripolar grid,
+                preprocessing/regrid can be used to regrid 2-D and
+                3-D forcing data. Keep in mind that
+                preprocessing/regrid is not fully tested hence may
+                fail on some cases. So try to find input forcing
+                data on regular lon/lat grid. If you have to use
+                preprocessing/regrid and encouter some problems,
+                please send an email to the mom4 email list about
+                your issues and the issues will be addressed as
+                soon as possible.</p>
+                <p>f) If runoff need to be regridded onto your own
+                grid, <tt class=
+                "filename">preprocessing/runoff_regrid</tt> should
+                be used. runoff_regrid can only accept input data
+                sets on regular lon/lat grid. This tool moves the
+                river runoff from a spherical grid onto your model
+                grid, whether spherical or tripolar. It places the
+                river runoff onto the sea point nearest to the land
+                near where the original data was located. Care
+                should be taken to be sure you are satisfied with
+                the results of these steps.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447155"></a><a name=
+              "id2447158"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Can I use the datasets of mom4 test as input for
+                the regrid procedure, or do I need to use original
+                lat-lon datasets?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You can use the datasets of mom4 test as input
+                for regridding, but it is not recommended when the
+                grid of the mom4 test is tripolar grid. When the
+                input data is on tripolar grid, you have to use
+                preprocessing/regrid. As mentioned in the previous
+                question, you may encounter some problems when you
+                use this tool. If the original lat-lon datasets are
+                available, those datasets are recommended to
+                use.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447184"></a><a name=
+              "id2447186"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Where can I obtain the datsets on lon/lat grid
+                as input for regridding?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You can obtain such data sets on the GFDL NOMADS
+                server <a href=
+                "http://nomads/nomads/forms/mom4.html" target=
+                "_top">http://nomads/nomads/forms/mom4.html</a>.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447211"></a><a name=
+              "id2447213"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>When do I need to generate an exchange grid?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You need to generate exchage grid when your
+                model is driven by the <tt class=
+                "filename">coupler_main</tt> in the directory
+                /coupler. You do not need to generate an exchange
+                grid if you are driving the ocean with <tt class=
+                "filename">ocean_solo.F90</tt> in the directory
+                mom4/drivers.</p>
+                <p>You can check path_names in the input directory
+                to find out if your test is coupled model or solo
+                model. If coupler/coupler_main.f90 is included in
+                the path_names, your test is a coupled model,
+                otherwise it is a solo model.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447254"></a><a name=
+              "id2447256"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How do I generate the exchange grid?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You can use <tt class=
+                "filename">preprocessing/generate_grid/make_xgrids</tt>
+                to generate exchange grid. The usage of make_xgrids
+                is:</p>
+                <p><span><b class="command">make_xgrids -o
+                ocean_grid.nc -a atmos_grid.nc -l
+                land_grid.nc.</b></span></p>
+                <p>Normally <tt class="filename">atmos_grid.nc and
+                land_grid.nc</tt> are chosen to be the same. In
+                this case, the usage will be:</p>
+                <p><span><b class="command">make_xgrids -o
+                ocean_grid.nc -a atmos_grid.nc</b></span>.</p>
+                <p>Assume you already generated the grid for ocean
+                model and we call it <tt class=
+                "filename">ocean_grid.nc</tt>. If you decide you
+                want to pick atmosphere grid the same as ocean
+                grid, you can generate the exchange grid by:
+                <span><b class="command">make_xgrids -o
+                ocean_grid.nc -a ocean_grid.nc</b></span></p>
+                <p>If you want to pick different resolution of
+                atmosphere grid, you can use ocean_grid_generator
+                to generate another grid file and passed the grid
+                file to make_xgrids through option <span><b class=
+                "command">-a</b></span> .</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447343"></a><a name=
+              "id2447346"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>We are trying to set up a regional model for
+                Indian ocean using mom4 in Origin 3000. On
+                integration model blows with CFL violation and
+                gives an error message in fm.out file =&gt;Error:
+                Land cell at (i,j,k) = ( 1, 1, 1), (lon,lat,dpt) =
+                ( 30.25, -29.75, 5.m) has tracer(n= 1) = NaN What
+                may be the reason?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>This message is often the result of the model
+                bombing because of a large time step. Here is what
+                typically happens.</p>
+                <div class="orderedlist">
+                  <ol type="1">
+                    <li>The model produces infinity for some
+                    reason, such as a time step instability. The
+                    computer interprets infinity as NaN.</li>
+                    <li>Some computers are happy to"compute" with
+                    NaNs, and so the model will continue running.
+                    NaNs can easily move to land points, since
+                    0.0*NaN is NaN.</li>
+                    <li>When mom4 reaches one of the "diag_freq"
+                    time steps determining when to write output to
+                    stdout, it will write NaNs. One of these
+                    diagnostic checks examines whether there are
+                    nonzero values of tracer and velocity over
+                    land. Since NaN is nonzero, the model brings
+                    itself down and produces the message you
+                    quoted.</li>
+                  </ol>
+                </div>
+                <p>If the above is happening, then here is what I
+                suggest:</p>
+                <p>1. Examine the initialization portion of the
+                stdout file fms.out to see if mom4 has found any a
+                priori problems with your time steps. Are you on
+                the edge of stability, or safely within the linear
+                constraints for the barotropic, baroclinie, and
+                advection time steps? mom4 performs rudimentary
+                time step analyses that are often sufficient to
+                find time step problems. However, it certainly
+                cannot find all problems before running the
+                model.</p>
+                <p>2. set diag_freq=1 for all places that you can
+                do so, such as the following places:</p>
+                <p>&lt;namelist name="ocean_model_nml"&gt;
+                energy_diag_freq=1</p>
+                <p>These diagnostics may help determine where the
+                NaNs start. The diagnostics may also help to
+                determine if there is simply a time step
+                instability (resolved by reducing time steps) or
+                something wrong with your land/sea mask</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447429"></a><a name=
+              "id2447432"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I try to perform a spin-up run from rest with
+                temperature and salinity initial condition from
+                Levitus, but I often have systematic violations of
+                CFL condition associated with the vertical
+                velocity. Any suggestion?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Model spin-up is, unfortunately, an art rather
+                than a science. Here are some suggestions:</p>
+                <div class="orderedlist">
+                  <ol type="1">
+                    <li>Are you satisfying the time step limits
+                    printed in the fms.out file from mom4 computed
+                    during initialization? There are a number of
+                    places where mom4 prints this information
+                    depending on the physical process being
+                    considered. It may be that you simply have too
+                    large time step. Please read the fms.out file
+                    fully to see if there is something happening
+                    along these lines.</li>
+                    <li>If you think your time steps are fine, then
+                    try running for some days/months with zero
+                    surface forcing. The initial conditions from
+                    Levitus will create waves that allow the model
+                    velocity field to spin up and remove some of
+                    the initialization shock. What often happens
+                    when starting from rest and using full boundary
+                    forcing is strong initialization shock that
+                    creates fast processes (e.g., strong
+                    convection, strong waves) that can go unstable
+                    whereas normally the model would be stable.
+                    Assuming the model stays stable with no surface
+                    forcing, add surface forcing after a few
+                    months. You may wish to add surface forcing
+                    piecemeal (e.g., first add surface buoyancy
+                    forcing for a few days/weeks and then add
+                    winds).</li>
+                    <li>If the model bombs with zero surface
+                    forcing, then you may have some problems with
+                    the Levitus values interpolated to your grid. A
+                    way to check whether this is a problem is to
+                    start with zonally averaged Levitus initial
+                    conditions (you can generate these from
+                    Ferret). These are smoother and tend to
+                    initiate more mild waves upon startup than with
+                    the normal Levitus initial conditions. If you
+                    find this does the trick, then return to the
+                    full Levitus initial conditions and try to move
+                    through the initialization shock by taking
+                    small time steps for some period of weeks to
+                    months.</li>
+                    <li>If the model continues to bomb, then you
+                    will need to carefully investigate the
+                    integrity of the surface forcing fields. Have
+                    they been properly interpolated to your model
+                    grid? Are there any spurious values that are
+                    well outside the expected physical range? Are
+                    the fluxes in the proper units?</li>
+                    <li>Finally, there may be some problems
+                    initializing the model with a particular piece
+                    of physics/numerics. Try simplifying the
+                    physics from what likely is a realistic suite
+                    to something more like in mom4_test1. We often
+                    see problems with KPP during initialization, so
+                    this is a good candidate to remove first. After
+                    some months of running without your desired
+                    physics, then return to the physics you wish.
+                    If there continues to be problems when using
+                    the desired physics, then you may be onto a
+                    bug, in which case you will need to diagnose
+                    the problem carefully and understand what is
+                    going wrong algorithmically. If you do so, and
+                    it is indeed a bug, then you are beginning to
+                    understand what it is to be a mom developer
+                    :-)</li>
+                  </ol>
+                </div>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447540"></a><a name=
+              "id2447542"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I generated a file (data.nc) and use the file as
+                inital condition. However, time_interp_external.F90
+                can not read my data.nc file and issue error
+                messaage: "file/field INPUT/data.nc/temp couldnt
+                recognize axis atts in time_interp_external".</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You need to check if the time axis has the
+                cartesian_axis attribute. If it doesn't, you need
+                to add the the following to your data file:</p>
+                <p>TIME:cartesian_axis = "T" through ncatted.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447569"></a><a name=
+              "id2447572"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I have problem with my data because the calendar
+                attribute is missing. However, I do not have NCO
+                library to use the ncatted tool. Is there any way
+                to add calendar attribute without NCO command?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>You can use ncdump/ncgen but this is harder to
+                do with large files since most editors have limited
+                buffer capacity. ncdump/ncgen are included with the
+                NetCDF library.</p>
+                <p>ncdump foo.nc &gt; foo.cdl</p>
+                <p>open foo.cdl with your favorite editor and
+                modify header, in this case add "calendar"
+                attribute to time axis</p>
+                <p>ncgen -o foo_new.nc &lt; foo.cdl</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447606"></a><a name=
+              "id2447608"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I tried to use daily forcing to run MOM4, then I
+                found that the routine "test_time_interp_ext"
+                actually interpolates the daily data to the monthly
+                data by assuming each month has 31 days. If MOM4
+                code does the same thing as the routine
+                "test_time_interp_ext", then there's no difference
+                to input daily forcing or monthly forcing. Am I
+                correct?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>For daily data, forcing fields are linearly
+                interpolated on each call to "time_interp_external"
+                data to the current model time. For example,
+                assuming daily forcing times are centered at 12Z,
+                for model time Jan 1 0Z, the result is (0.5*Dec31 +
+                0.5*Jan1). The "test_time_interp_ext" program is
+                defaulted to increment the model time in units of
+                months. You can change this through the namelist.
+                The important thing to verify is that the forcing
+                times as printed in the output are the correct
+                values.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447637"></a><a name=
+              "id2447640"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>The routine "test_time_interp_ext" reads in the
+                times as the indices. So, it doesn't matter if the
+                "time" starts from 1 to 365 ("days since ....") or
+                the "time" starts from "17216112" to "17224848"
+                ('hours since ...'), which is the case for the
+                daily surface flux data from NCAR/NCEP reanalysis.
+                Well, it turned out that the test_time_interp_ext
+                routine always assumes that the time for NCAR/NCEP
+                reanalysis data starts from previous year at 12/18,
+                no matter of what. While the correct start time for
+                these data should be at 1/1 of current year.</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Time encoding in the forcing file, e.g. "days
+                since 0001-01-01" or "hours since 0001-01-01" is
+                converted into the model representation of time
+                appropriate either the "no_leap" or "julian"
+                calendars. We currently do not support the
+                Gregorian calendar in the FMS code. This is the
+                source of your problem. We REQUIRE the
+                "calendar_type" attribute associated with the time
+                axis in order to decode the time data correctly. In
+                your case, the NCEP Reanalysis data is encoded
+                using the Gregorian calendar and the reference date
+                is year 1, leading to a substantial drift over
+                nearly 2000 years. Providing the "julain"
+                calendar_type attribute leads to incorrect time
+                decoding. Until the FMS developers at GFDL (or
+                someone in the community) provides Gregorian
+                calendar support in the FMS "time_manager" module,
+                the only suggestion I can give is to either change
+                the time data/metadata using tools such as the NCO
+                operators, or use an application such as Ferret .
+                Sorry for this inconvenience, but I've been
+                requesting support for the Gregorian calendar for
+                some time (check the GForge site under MOM4 feature
+                requests).</p>
+                <p>Here's an example Ferret script to save a
+                modified version of the NCEP Reanalysis data with
+                time values which can be handled correctly in the
+                model:</p>
+<pre class="programlisting">
+use "ncep_annual_forcing_file.nc"
+def ax/t="31-dec-($year) 12:00:00":"02-jan-($year) 
+12:00:00":24/units="hours" time_out
+define grid/like=var/t=time_out grid_out
+let var_mod = var[gt=grid_out@ave]
+repeat/l=1:365 save/app/file="var_mod.nc" var_mod
+</pre>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2447720"></a>
+                <h3 class="title"><a name="id2447720"></a>4. Issues
+                with tables</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2447727">What is the use of
+                  data_table?</a></dt>
+                  <dt>Q: <a href="#id2447752">What is the use of
+                  diag_table?</a></dt>
+                  <dt>Q: <a href="#id2441391">What is the
+                  significance of the time at the top of the
+                  diag_table? How does this time interact with the
+                  time used in the model?</a></dt>
+                  <dt>Q: <a href="#id2441452">I have error in
+                  time_manager: "FATAL from PE 0: time_manager:
+                  Invalid day in set_date_julian" what could be the
+                  reason?</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447727"></a><a name=
+              "id2447729"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What is the use of data_table?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>During the course of model integration user may
+                want to replace a model field with values from a
+                data file or even with a const. Data_table lists
+                all fields you want to override and the source of
+                data used for override. Data_table is also a
+                convenient way to initialize model. More details
+                are available in shared/data_override.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2447752"></a><a name=
+              "id2447755"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What is the use of diag_table?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Diag_table is for writing model's results. The
+                table lists all field names, file names, output
+                frequency and other information. More details are
+                available in shared/diag_manager.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441391"></a><a name=
+              "id2441393"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What is the significance of the time at the top
+                of the <tt class="filename">diag_table</tt>? How
+                does this time interact with the time used in the
+                model?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Let's call the time at the top of <tt class=
+                "filename">diag_table</tt> T1 and the model's
+                initial time T2. The time at the top of the <tt
+                class="filename">diag_table</tt> (T1) is used as
+                starting time of time axis in all output files that
+                have time axis. When you open any output file and
+                look for variable Time, you will see:</p>
+<pre class="programlisting">
+      Time:units = "hours since T1"
+   
+</pre>
+                <p>(assuming unit is hours).</p>
+                <p>T2 is the initial time of the model, all fields
+                cannot be written to output files sooner than T2.
+                Since time can not be negative you should have T2
+                &gt;= T1. In practice, to keep values in time axis
+                from being exceedingly large, you'd better have
+                T2=T1.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441452"></a><a name=
+              "id2441455"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I have error in time_manager: "FATAL from PE 0:
+                time_manager: Invalid day in set_date_julian" what
+                could be the reason?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>It is possible that in the diag_table you have
+                initial time = Dec. 31 19xx and the saving
+                frequency is MONTHS. The day is fixed (31) and the
+                month is incremented by 1. You will end up having
+                Feb. 31 which is illegal, hence the error
+                message.</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2441479"></a>
+                <h3 class="title"><a name="id2441479"></a>5. Using
+                the runscripts</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2441486">Are the compile and
+                  run scripts platform dependent? What do I need to
+                  change when I go from one platform to
+                  another?</a></dt>
+                  <dt>Q: <a href="#id2441528">How do I set the
+                  length of run?</a></dt>
+                  <dt>Q: <a href="#id2441563">How do I set the
+                  number of processors?</a></dt>
+                  <dt>Q: <a href="#id2441592">What is STATIC
+                  option, how do I use this option?</a></dt>
+                  <dt>Q: <a href="#id2441630">How can I change the
+                  time step of the model?</a></dt>
+                  <dt>Q: <a href="#id2441695">How do I view the
+                  model output?</a></dt>
+                  <dt>Q: <a href="#id2441730">What should I do to
+                  run a test case using restart data?</a></dt>
+                  <dt>Q: <a href="#id2441772">How do I know if two
+                  runs using different number of processors produce
+                  identical results?</a></dt>
+                  <dt>Q: <a href="#id2441831">Should I care about
+                  the contents of the fms.out file</a></dt>
+                  <dt>Q: <a href="#id2441885">What does
+                  mppnccombine do? How can I use it</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441486"></a><a name=
+              "id2441488"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Are the compile and run scripts platform
+                dependent? What do I need to change when I go from
+                one platform to another?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>At GFDL, we try our best to make the scripts
+                independent from platforms as much as possible. In
+                theory, all platform specifics are contained in
+                Make templates (<tt class=
+                "filename">mkmf.template.platform</tt>). When users
+                set platform (sgi, ibm, ifc ...) the scripts will
+                pick the right template.</p>
+                <p>In reality, users encounter various problems
+                related to implementation on different platforms.
+                Users may need to modify the source code and/or
+                scripts. Please refer to MOM4 on Various Computer
+                Platforms section to find if your problems are
+                listed there. If not, please report your problems
+                to us and we try our best to address your
+                problems.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441528"></a><a name=
+              "id2441531"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How do I set the length of run?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>In the runscript you see:</p>
+<pre class="programlisting">
+      set days = 1
+      set months = 0
+   
+</pre>
+                <p>You can change days and months to any number you
+                want. However, note that the tests are provided for
+                checking ports of the code to different machines,
+                and overall numerical integrity of the code. The
+                tests are not guaranteed to run for an indefinite
+                period of time (i.e., they are not `` tuned
+                models''). A test case therefore may bomb if
+                changing the runlength to something longer.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441563"></a><a name=
+              "id2441565"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How do I set the number of processors?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>In the runscript you see:</p>
+<pre class="programlisting">
+      set npes = 15
+   
+</pre>
+                <p>In this example, there are 15 processors, you
+                can set npes to any number your system can afford.
+                However, You need to pay attention in case of
+                STATIC option.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441592"></a><a name=
+              "id2441595"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What is STATIC option, how do I use this
+                option?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Based on our experience with SGI Origins at
+                GFDL, The compiler is performing an excessive
+                number of array copies if all the arrays are
+                dynamically allocated. The solution is to allocate
+                arrays at compile time.</p>
+                <p>Requirements of static option: each processor
+                should have the same number of grid points as all
+                other processor. For example, if your global grid
+                is 100x100 you can not have 13 processors but you
+                can have 2, 4, 8, 10 ... processors.</p>
+                <p>For more details see the script for static
+                option (test1/run_mom4_test1_static).</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441630"></a><a name=
+              "id2441633"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How can I change the time step of the model?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>In the runscript look for &amp;ocean_solo_nml
+                (or <tt class="literal">&amp;ocean_coupler_nml</tt>
+                if you run coupled model). You will see:</p>
+<pre class="programlisting">
+      dt_ocean = 3600
+   
+</pre>
+                <p>This is time step of ocean model measured in
+                seconds. Note that a longer time step may violate
+                CFL conditions and the model may bomb.</p>
+                <p>"dt_ocean" corresponds to the ocean tracer time
+                step. The other model time steps are set relative
+                to one another via the correspondence</p>
+<pre class="programlisting">
+       dt_ocean = dtts
+                = baroclinic_split * dtuv
+                = surface_height_split * dteta
+                = barotropic_split * baroclinic_split * dtfs
+   
+</pre>
+                <p>with</p>
+<pre class="programlisting">
+       dtts  = tracer time step
+       dtuv  = baroclinic momentum time step
+       dteta = "big leap-frog" time step (the time which updates the surface height)
+       dtfs  = barotropic momentum time step
+   
+</pre>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441695"></a><a name=
+              "id2441698"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How do I view the model output?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Output files are compressed in tar format.
+                First, you need to uncompress the output files. The
+                command for extracting a tar file is:</p>
+<pre class="programlisting">
+      tar -xvf filename.tar
+   
+</pre>
+                <p>As a result, you will get a number of files in
+                NetCDF format. Some common tools working with
+                NetCDF are ncview and ferret.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441730"></a><a name=
+              "id2441733"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What should I do to run a test case using
+                restart data?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Basically, you need to use restart data instead
+                of initial condition data. If you are using the
+                runscripts provided by the <span><b class=
+                "command">mom4p0</b></span> release. Do the
+                following:</p>
+<pre class="programlisting">
+      Remove the following section from the runscript:
+         cp $expdir/preprocessing/ocean_tracers_ic.tar .
+         tar -xvf ocean_tracers_ic.tar
+         rm -f ocean_tracers_ic.tar
+      and add the following in the same place:
+         cp restart_file.nc.tar . (including the path)
+         tar -xvf restart_file.nc.tar
+         rm -f restart_file.nc.tar
+   
+</pre>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441772"></a><a name=
+              "id2441775"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How do I know if two runs using different number
+                of processors produce identical results?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>It is good idea for each test case to check
+                if:</p>
+<pre class="programlisting">
+    - model results reproduce across different sets of processors
+    - model results reproduce across restart data
+   
+</pre>
+                <p>In both cases users can rely on checksums that
+                are printed at the end of each run (output file <tt
+                class="filename">fms.out</tt>). For example a run
+                using 1 processor and another run using 10
+                processors should have the same checksums. NetCDF
+                tool <tt class="filename">ncdiff</tt> can also be
+                used to view differences of two <tt class=
+                "filename">.nc</tt> files.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441831"></a><a name=
+              "id2441834"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Should I care about the contents of the fms.out
+                file</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>MOM4 has plenty of material written to <tt
+                class="filename">stdout</tt> (which is what is
+                written to <tt class="filename">fms.out</tt>). The
+                user is strongly recommended to become familiar
+                with the contents of <tt class=
+                "filename">fms.out</tt>, especially when building a
+                new model experiment. This file contains numerous
+                notes, warnings, error messages, and numerical
+                diagnostics. Our experience is that most of the
+                problems running MOM4 can be resolved by reading
+                through the <tt class="filename">fms.out</tt>
+                file.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441885"></a><a name=
+              "id2441888"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>What does mppnccombine do? How can I use it</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>When running the model on many processors each
+                processor will have a separate output file (like
+                file.nc.0000, file.nc.0001, ...). mppnccombine will
+                put all these separate pieces together so that we
+                have a file corresponding to the whole grid.</p>
+                <p>Here is the combining command: $MPPNCCOMBINE
+                file.nc where file.nc is the unified output file,
+                the input is not specified in the command line
+                because it is assumed to be identical to the output
+                plus 0000, 0001, .... By the way running the
+                combining command without any argument will give
+                help on how to use this command</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2441923"></a>
+                <h3 class="title"><a name="id2441923"></a>6. Some
+                questions about model setup and namelists</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2441930">How serious should I
+                  take the warning:"WARNING from
+                  ocean_freesurf_mod: eta_t( 26 , 86 )= -1. has
+                  been truncated to 1."? does it affect the model
+                  outcome?</a></dt>
+                  <dt>Q: <a href="#id2441959">I want to apply
+                  realistic forcing to the model, what may be the
+                  unit to the water flux (lprec)?</a></dt>
+                  <dt>Q: <a href="#id2441996">The model seems to
+                  have ended naturally without errors, however
+                  model results (history files) contain only
+                  zeroes. What could be the reason here?</a></dt>
+                  <dt>Q: <a href="#id2442023">How serious should I
+                  take this warning in fms.out: WARNING from PE 1:
+                  ==&gt;Warning: nxland &gt; 0, but
+                  use_xlandmix=.false. Remove xland table entries
+                  to reduce memory</a></dt>
+                  <dt>Q: <a href="#id2442058">I run of MOM4 on a
+                  simple rectangular grid, with idealized restoring
+                  boundary conditions. My temperature field looks
+                  fine for the whole domain except j=1, where
+                  temp[j=1] = 0. Why?</a></dt>
+                  <dt>Q: <a href="#id2442095">I want to do an
+                  experiment with an inversion, so I try to turn
+                  off the convection by setting the relevant
+                  namelists as follows: convect_ncon=.false.,
+                  convect_full_scalar=.false.,
+                  convect_full_vector=.false.
+                  convective_adjust_on=.false., use_frazil =
+                  .false., bryan_lewis_diffusivity=.false. I still
+                  get an overturing when the horizontal velocity is
+                  non-zero, why?</a></dt>
+                  <dt>Q: <a href="#id2442137">I have turned off
+                  frazil by setting use_frazil = .false. and yet
+                  fms.out says: Processing diag tracer frazil. Why?
+                  Am I wasting CPU time?</a></dt>
+                  <dt>Q: <a href="#id2442170">Mom4 offers
+                  Bryan-Lewis vertical mixing which may vary from
+                  equator to the poles. However, the coefficients
+                  afkph_00 and afkph_90 ... defined in
+                  ocean_vert_mix.f90 are the same at the equator
+                  and the poles. Is this an error?</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441930"></a><a name=
+              "id2441933"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How serious should I take the warning:"WARNING
+                from ocean_freesurf_mod: eta_t( 26 , 86 )= -1. has
+                been truncated to 1."? does it affect the model
+                outcome?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The warning takes place only when
+                truncate_eta=.true. in ocean_freesurf_nml. This is
+                intended for spinups where the surface height may
+                become extremely large and result in negative
+                thickness for the top model grid cell. Truncating
+                eta to a small value will NOT conserve ocean
+                properties. Hence, this option is not recommended
+                for experiments where you are interested in the
+                results.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441959"></a><a name=
+              "id2441961"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I want to apply realistic forcing to the model,
+                what may be the unit to the water flux (lprec)?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>In <tt class=
+                "filename">ocean_core/ocean_sbc.F90</tt>, search
+                for "lprec". You will see that lprec is part of
+                Ice_ocean_boundary derived type. The assumed units
+                of lprec are mass units, so there is a division in
+                the code by rho0 to bring it to m/s. Here are the
+                comments from ocean_sbc.F90</p>
+                <p>! freshwater flux in kg/(m^2 sec) from rivers
+                and calving land glaciers ! rho0r converts mass
+                flux to (m/s)</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2441996"></a><a name=
+              "id2441999"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>The model seems to have ended naturally without
+                errors, however model results (history files)
+                contain only zeroes. What could be the reason
+                here?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>It is possible that the output frequency
+                (defined in diag_table) is larger than the model's
+                run length. If output frequency is a month and the
+                model has run only 10 days there will be zeroes in
+                model output. You need to change either output
+                frequency or run length.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442023"></a><a name=
+              "id2442026"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>How serious should I take this warning in
+                fms.out: WARNING from PE 1: ==&gt;Warning: nxland
+                &gt; 0, but use_xlandmix=.false. Remove xland table
+                entries to reduce memory</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The namelist "use_xlandmix" refers to the
+                algorithm
+                "mom4/ocean_param/sources/xlandmix/ocean_xlandmix.f90"
+                which handles isolated basins such as the
+                Mediterranean, Red Sea, etc. whose relatively
+                narrow passages are not resolved by the model
+                resolution. In these cases, an ASCII formatted
+                table containing mixing rates and a depth range
+                between selected points in grid ccordinates can be
+                supplied to achieve the desired exchange of
+                tracers. You can refer to the html file in the
+                above directory for more information. If you are
+                not interested in achieving this effect or your
+                model does not contain isolated basins, then you
+                can safely remove the table from your runscript.
+                Otherwise, you should consider examining the table
+                entries and enabling this option.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442058"></a><a name=
+              "id2442061"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I run of MOM4 on a simple rectangular grid, with
+                idealized restoring boundary conditions. My
+                temperature field looks fine for the whole domain
+                except j=1, where temp[j=1] = 0. Why?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>When you generate topography, there is an
+                option</p>
+                <p>fill_first_row</p>
+                <p>My guess is that you have this set .true. in
+                your preprocessing topography generation. In this
+                case, the zeros that you are reading at j=1 mean
+                this is land. The reason that we have this option
+                is due to technical details related to coupling to
+                our ice model. If you are not coupling to the GFDL
+                sea ice model, then fill_first_row=.false. is
+                fine.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442095"></a><a name=
+              "id2442098"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I want to do an experiment with an inversion, so
+                I try to turn off the convection by setting the
+                relevant namelists as follows:
+                convect_ncon=.false., convect_full_scalar=.false.,
+                convect_full_vector=.false.
+                convective_adjust_on=.false., use_frazil = .false.,
+                bryan_lewis_diffusivity=.false. I still get an
+                overturing when the horizontal velocity is
+                non-zero, why?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>Here are some things to consider:</p>
+                <p>-- are you indeed using the constant vertical
+                diffusion module, or perhaps are you using ppvmix
+                or kppvmix but do not realize this to be the
+                case?</p>
+                <p>-- do you see vertically unstratified water in
+                your solution?</p>
+                <p>-- why would you expect to get a zero
+                overturning without convection? There are still
+                downwelling and upwelling near boundaries that may
+                contribute to vertical motion.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442137"></a><a name=
+              "id2442140"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I have turned off frazil by setting use_frazil =
+                .false. and yet fms.out says: Processing diag
+                tracer frazil. Why? Am I wasting CPU time?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>We always have frazil enabled (see
+                mom4/ocean_core/ocean_tracer.F90) in order to allow
+                the diagnostic tracer type "T_diag" to be
+                nontrivial, even with idealized simulations where
+                frazil is not used. It is a bit unclean, but there
+                are trivial computations added which should be of
+                minimal consequence to the cpu cost.</p>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442170"></a><a name=
+              "id2442173"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>Mom4 offers Bryan-Lewis vertical mixing which
+                may vary from equator to the poles. However, the
+                coefficients afkph_00 and afkph_90 ... defined in
+                ocean_vert_mix.f90 are the same at the equator and
+                the poles. Is this an error?</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>The mom4 default has no latitudinal dependence,
+                since that is the traditional implementation of the
+                scheme according to Bryan and Lewis (1979). We have
+                found some utility in our coupled modelling with
+                increased vertical mixing in the higher latitudes,
+                especially the NAtl. Hence the new flexibility
+                added to mom4.</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2442200"></a>
+                <h3 class="title"><a name="id2442200"></a>7.
+                IBM</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2442207">When I run the
+                  "run_mom4_test1" script on IBM machine, it
+                  stopped at the link stage with error message "ld:
+                  0711-317 ERROR: Undefined symbol:
+                  .flush".</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442207"></a><a name=
+              "id2442210"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>When I run the "run_mom4_test1" script on IBM
+                machine, it stopped at the link stage with error
+                message "ld: 0711-317 ERROR: Undefined symbol:
+                .flush".</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>use: LDFLAGS= -brename:.flush,.flush_
+                -brename:.memuse,.memuse_ in your makefile or in
+                the mkmf template.</p>
+              </td>
+            </tr>
+            <tr class="qandadiv">
+              <td align="left" valign="top" colspan="2">
+                <a name="id2442232"></a>
+                <h3 class="title"><a name="id2442232"></a>8. SGI
+                Irix</h3>
+              </td>
+            </tr>
+            <tr class="toc" colspan="2">
+              <td align="left" valign="top" colspan="2">
+                <dl>
+                  <dt>Q: <a href="#id2442239">I use SGI and I have
+                  problem compiling and linking memuse.c, here is
+                  the error message: ld64: FATAL 12 : Expecting n64
+                  objects: memuse.o is n32. *** Error code 2
+                  (bu21)</a></dt>
+                </dl>
+              </td>
+            </tr>
+            <tr class="question">
+              <td align="left" valign="top"><a name=
+              "id2442239"></a><a name=
+              "id2442242"></a><b>Q:</b></td>
+              <td align="left" valign="top">
+                <p>I use SGI and I have problem compiling and
+                linking memuse.c, here is the error message: ld64:
+                FATAL 12 : Expecting n64 objects: memuse.o is n32.
+                *** Error code 2 (bu21)</p>
+              </td>
+            </tr>
+            <tr class="answer">
+              <td align="left" valign="top"><b>A:</b></td>
+              <td align="left" valign="top">
+                <p>This is probably because memuse.c is compiled
+                with 32 bit option while other files are compiled
+                with 64 bit. You may need to add CFLAGS=-64 to your
+                SGI template. This will ensure that memuse.o will
+                be a 64-bit object.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="footer" style="position:relative;">
+      <div style="float:right; clear:right; text-align:right;">
+        Document Author: <a href="" onclick=
+        "javascript:window.location='mai'+'lt'+'o:'+'Giang.Nong'+'%40'+'noaa.gov'"
+         onmouseover=
+        "javascript:window.status='send ema'+'il';return true;"
+        onmouseout=
+        "javascript:window.status='';return true;">&nbsp;Giang&nbsp;Nong</a><br>
+        <a href="mom4_faq.pdf">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; Download Document as PDF</a><br>
+        <div style=
+        "position:absolute; bottom:0px; float:right; clear:right; text-align:right;">
+          *Links on this page may cause you to leave the GFDL
+          website. The U.S. Government does not endorse any
+          non-Federal websites on this page.
+        </div>
+      </div>
+      <a href="http://www.noaa.gov/privacy.html">Privacy Policy</a>
+      | <a href=
+      "http://www.noaa.gov/disclaimer.html">Disclaimer</a><br>
+      <a href="http://www.doc.gov/">US Department of Commerce</a> |
+      <a href="http://www.noaa.gov/">NOAA</a> | <a href=
+      "http://www.oar.noaa.gov/">OAR</a> | <a href=
+      "http://www.gfdl.noaa.gov/">Geophysical Fluid Dynamics
+      Laboratory</a><br>
+       physical address: Princeton Forrestal Campus 201 Forrestal
+      Road, Princeton NJ, 08542-0308<br>
+       mailing address: PO Box 308, Princeton NJ, 08542-0308<br>
+       phone: (609) 452-6500 fax: (609) 987-5063<br>
+      <a href="mailto:oar.gfdl.webmaster-data1@noaa.gov">mailto:
+      web master</a><br>
+       last modified: May 26, 2005
+    </div>
+  </body>
+</html>

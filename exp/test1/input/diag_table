@@ -1,0 +1,111 @@
+"MOM4 test1"
+1980 1 1 0 0 0
+
+"ocean_day",  1,"days",1,"hours","Time"
+"ocean_snap", 1,"days",1,"hours","Time"
+#
+#diagnostic field entries
+#===========================================================================
+# ocean model grid quantities (static fields and so not time averaged)
+"ocean_model","geolon_t","geolon_t","ocean_day","all",.false.,"none",2
+"ocean_model","geolat_t","geolat_t","ocean_day","all",.false.,"none",2
+"ocean_model","geolon_c","geolon_c","ocean_day","all",.false.,"none",2
+"ocean_model","geolat_c","geolat_c","ocean_day","all",.false.,"none",2
+"ocean_model","area_t","area_t",    "ocean_day","all",.false.,"none",2
+"ocean_model","area_u","area_u",    "ocean_day","all",.false.,"none",2
+"ocean_model","ht","ht",            "ocean_day","all",.false.,"none",2
+"ocean_model","hu","hu",            "ocean_day","all",.false.,"none",2
+#===========================================================================
+# prognostic fields
+"ocean_model","dhu","dhu",              "ocean_day","all",.true.,"none",2
+"ocean_model","dht","dht",              "ocean_day","all",.true.,"none",2
+"ocean_model","temp","temp",            "ocean_day","all",.true.,"none",2
+"ocean_model","salt","salt",            "ocean_day","all",.true.,"none",2
+"ocean_model","age_global","age_global","ocean_day","all",.true.,"none",2
+"ocean_model","u","u",                  "ocean_day","all",.true.,"none",2
+"ocean_model","v","v",                  "ocean_day","all",.true.,"none",2
+"ocean_model","eta_t","eta_t",          "ocean_day","all",.true.,"none",2
+"ocean_model","eta_u","eta_u",          "ocean_day","all",.true.,"none",2
+#===========================================================================
+# vertical velocity and volume transport
+"ocean_model","wt","wt",                        "ocean_day","all",.true.,"none",2
+"ocean_model","wu","wu",                        "ocean_day","all",.true.,"none",2
+"ocean_model","ud","ud",                        "ocean_day","all",.true.,"none",2
+"ocean_model","vd","vd",                        "ocean_day","all",.true.,"none",2
+"ocean_model","psiu","psiu",                    "ocean_day","all",.true.,"none",2
+"ocean_model","psiv","psiv",                    "ocean_day","all",.true.,"none",2
+"ocean_model","tx_trans","tx_trans",            "ocean_day","all",.true.,"none",2
+"ocean_model","ty_trans","ty_trans",            "ocean_day","all",.true.,"none",2
+"ocean_model","ty_trans_rho","ty_trans_rho",    "ocean_day","all",.true.,"none",2
+"ocean_model","ty_trans_theta","ty_trans_theta","ocean_day","all",.true.,"none",2
+#=================================================================================================
+# diagnosing tracer transport 
+"ocean_model","temp_adv_flux_x_int_z","temp_adv_flux_x_int_z", "ocean_day","all",.true.,"none",2
+"ocean_model","temp_adv_flux_y_int_z","temp_adv_flux_y_int_z", "ocean_day","all",.true.,"none",2
+"ocean_model","salt_adv_flux_x_int_z","salt_adv_flux_x_int_z", "ocean_day","all",.true.,"none",2
+"ocean_model","salt_adv_flux_y_int_z","salt_adv_flux_y_int_z", "ocean_day","all",.true.,"none",2
+
+#=================================================================================================
+# surface forcing
+"ocean_model","sfc_hflux","sfc_hflux",        "ocean_day","all",.true.,"none",2
+"ocean_model","sfc_hflux_adj","sfc_hflux_adj","ocean_day","all",.true.,"none",2
+"ocean_model","pme","pme",                    "ocean_day","all",.true.,"none",2
+"ocean_model","pme_adj","pme_adj",            "ocean_day","all",.true.,"none",2
+"ocean_model","river","river",                "ocean_day","all",.true.,"none",2
+"ocean_model","tau_x","tau_x",                "ocean_day","all",.true.,"none",2
+"ocean_model","tau_y","tau_y",                "ocean_day","all",.true.,"none",2
+#======================================================================================
+# layers 
+"ocean_model","depth_of_theta","depth_of_theta",    "ocean_day","all",.true.,"none",2
+"ocean_model","rho","rho",                          "ocean_day","all",.true.,"none",2
+"ocean_model","pot_rho","pot_rho",                  "ocean_day","all",.true.,"none",2
+"ocean_model","pot_rho_0","pot_rho_0",              "ocean_day","all",.true.,"none",2
+"ocean_model","potrho_mix_depth","potrho_mix_depth","ocean_day","all",.true.,"none",2
+"ocean_model","potrho_mix_base","potrho_mix_base",  "ocean_day","all",.true.,"none",2
+"ocean_model","press","press",                      "ocean_day","all",.true.,"none",2
+"ocean_model","mld","mld",                          "ocean_day","all",.true.,"none",2
+#======================================================================================
+# physical parameterizations 
+"ocean_model","vert_fric_coeff","vert_fric_coeff","ocean_day","all",.true.,"none",2
+"ocean_model","diff_cbt_t","diff_cbt_t",          "ocean_day","all",.true.,"none",2
+"ocean_model","diff_cbt_table","diff_cbt_table",  "ocean_day","all",.false.,"none",2
+#======================================================================================
+# numerical diagnostics 
+"ocean_model","temp_tmask_limit","temp_tmask_limit","ocean_day","all",.true.,"none",2
+#======================================================================================
+# instantaneous snapshots 
+"ocean_model","u","u",      "ocean_snap","all",.false.,"none",2
+"ocean_model","v","v",      "ocean_snap","all",.false.,"none",2
+"ocean_model","temp","temp","ocean_snap","all",.false.,"none",2
+#======================================================================================
+#
+#  FORMATS FOR FILE ENTRIES (not all input values are used)
+#  ------------------------
+#
+#"file_name", output_freq, "output_units", format, "time_units", "long_name"
+#
+#
+#   output_freq:  > 0  output frequency in "output_units"
+#                 = 0  output frequency every time step
+#                 =-1  output frequency at end of run
+#
+#   output_units = units used for output frequency
+#                  (years, months, days, minutes, hours, seconds)
+#
+#   time_units   = units used to label the time axis
+#                  (days, minutes, hours, seconds)
+#
+#
+#  FORMAT FOR FIELD ENTRIES (not all input values are used)
+#  ------------------------
+#
+#"module_name", "field_name", "output_name", "file_name", "time_sampling", time_avg, "other_opts", packing
+#
+#   time_avg = .true. or .false. or min or max
+#
+#   packing  = 1  double precision
+#            = 2  float
+#            = 4  packed 16-bit integers
+#            = 8  packed 1-byte (not tested?)
+
+

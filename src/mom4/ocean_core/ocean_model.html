@@ -1,0 +1,460 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_model_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_model_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Stephen.Griffies@noaa.gov">   Stephen M. Griffies </a>,&nbsp;
+    <a href="mailto:Matthew.Harrison@noaa.gov">   Matt Harrison </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_core">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Time step the ocean model using either a twolevel staggered scheme
+   (the default) or threelevel leap-frog scheme (the older approach). </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   Top level module for ocean model.  Contains routines for 
+   initialization, termination and update of ocean model state.
+   <br>
+<br>
+   Design consideration: declarations of top level ocean variables
+   are private to this module and hence are only available to other routines
+   through argument lists.  For instance, timestep information is passed to
+   the various modules on the initialization call and stored internally
+   in the respective modules.  This is a crucial design consideration sinces
+   it maintains modularity and hence maintainability of the code.  (mjh) </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>               constants_mod<br>            diag_manager_mod<br>                     fms_mod<br>             mpp_domains_mod<br>                     mpp_mod<br>    time_interp_external_mod<br>            time_manager_mod<br>ocean_advection_velocity_mod<br>               ocean_bbc_mod<br>      ocean_bih_friction_mod<br>           ocean_convect_mod<br>          ocean_coriolis_mod<br>           ocean_density_mod<br>       ocean_diagnostics_mod<br>           ocean_domains_mod<br>          ocean_freesurf_mod<br>             ocean_grids_mod<br>      ocean_horz_diffuse_mod<br>      ocean_lap_friction_mod<br>   ocean_neutral_physics_mod<br>               ocean_obc_mod<br>         ocean_operators_mod<br>          ocean_overflow_mod<br>      ocean_polar_filter_mod<br>          ocean_pressure_mod<br>          ocean_rivermix_mod<br>       ocean_riverspread_mod<br>               ocean_sbc_mod<br>     ocean_shortwave_pen_mod<br>     ocean_sigma_diffuse_mod<br>            ocean_sponge_mod<br>         ocean_thickness_mod<br>             ocean_topog_mod<br>     ocean_tracer_advect_mod<br>            ocean_tracer_mod<br>       ocean_tracer_util_mod<br>               ocean_tpm_mod<br>             ocean_types_mod<br>              ocean_util_mod<br>   ocean_velocity_advect_mod<br>     ocean_velocity_diag_mod<br>          ocean_velocity_mod<br>    ocean_vert_mix_coeff_mod<br>          ocean_vert_mix_mod<br>         ocean_workspace_mod<br>       ocean_xlandinsert_mod<br>          ocean_xlandmix_mod<br>              oda_driver_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_model_init">ocean_model_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#update_ocean_model">update_ocean_model</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#get_ocean_grid_size">get_ocean_grid_size</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#get_ocean_domain">get_ocean_domain</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_model_end">ocean_model_end</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#write_ice_ocean_boundary">write_ice_ocean_boundary</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#read_ice_ocean_boundary">read_ice_ocean_boundary</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#init_default_ice_ocean_boundary">init_default_ice_ocean_boundary</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#time_filter">time_filter</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_model_init"></a>
+<h4>ocean_model_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the ocean model. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="update_ocean_model"></a>
+<h4>update_ocean_model</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Update in time the ocean model fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="get_ocean_grid_size"></a>
+<h4>get_ocean_grid_size</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Obtain the ocean grid size. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="get_ocean_domain"></a>
+<h4>get_ocean_domain</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Obtain the ocean domain size. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_model_end"></a>
+<h4>ocean_model_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Close down the ocean model </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="write_ice_ocean_boundary"></a>
+<h4>write_ice_ocean_boundary</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Write the surface boundary conditions for use in coupled modeling. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="read_ice_ocean_boundary"></a>
+<h4>read_ice_ocean_boundary</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Read the surface boundary conditions for use in coupled modeling. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="init_default_ice_ocean_boundary"></a>
+<h4>init_default_ice_ocean_boundary</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Default surface boundary conditions for use in coupled modeling. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="time_filter"></a>
+<h4>time_filter</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   When threelevel time tendency is used, perform Robert-Asselin time 
+   filtering on velocity and tracer.
+   <br>
+<br>
+   Also perform time filter on surface height by replacing eta_t(tau)
+   with eta_t_bar(tau).
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_model_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>layout</tt>
+</dt>
+<dl>   Processor domain layout for ocean model. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>time_tendency</tt>
+</dt>
+<dl>   Possible time stepping schemes are the following. 
+   <br>
+<br>
+   1. "threelevel" has the following characteristics
+   <br>
+<br>
+   leap-frog for the time tendency which means the 
+   inviscid/nondissipative processes are at time tau.  
+   <br>
+<br>
+   forward for lateral mixing processes (dissipation at taum1)
+   <br>
+<br>
+   implicit for vertical dissipative (with aidif = 1.0)
+   <br>
+<br>
+   semi-implicit for Coriolis (with acor&gt;0) 
+   <br>
+<br>
+   Because of the need to apply time filters to suppress 
+   leap-frog splitting, the threelevel time stepping scheme
+   does not conserve total tracer content in the model.  
+   <br>
+<br>
+   2. "twolevel" has the following characteristics: 
+   <br>
+<br>
+   staggered 2nd order forward time tendency, which means 
+   that tracer advection, lateral tracer and velocity mixing, 
+   are at time tau, and pressure gradients at taup1.  
+   <br>
+<br>
+   Adams-Bashforth (either 2nd or 3rd order) for velocity advection  
+   <br>
+<br>
+   implicit vertical mixing (with aidif = 1.0)
+   <br>
+<br>
+   semi-implicit for Coriolis (with acor &gt; 0) 
+   <br>
+<br>
+   This scheme conserves total volume and tracer in the model.  
+   <br>
+<br> 
+<br>
+<span class="type">[character]</span>
+</dl>
+<dt>
+<tt>threelevel_time_filter</tt>
+</dt>
+<dl>   For running with time filtering applied to the threelevel time
+   tendency scheme.  Without time filtering, the model soon goes unstable. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>robert</tt>
+</dt>
+<dl>   Parameter setting the strength of the time filtering applied via the 
+   Robert-Asselin filter when using threelevel_time_filter=.true.
+   Typically taken as robert ~ 0.05 for global models. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>baroclinic_split</tt>
+</dt>
+<dl>   Ratio baroclinic_split = dtts/dtuv.  
+   Transients corrupted if baroclinic_split &gt; 1. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>barotropic_split</tt>
+</dt>
+<dl>   Ratio barotropic_split = dtuv/dtfs.  Must be 
+   large enough to resolve the barotropic gravity waves 
+   captured by the barotropic part of the model. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>surface_height_split</tt>
+</dt>
+<dl>   Ratio surface_height_split = dtts/dteta.  
+   Typically unity for models where baroclinic_split=1,
+   but something larger when baroclinic_split order 10.  dteta is the time 
+   step used for update of eta_t. If surface_height_split is not equal to 
+   unity, then tracer conservation properties are compromised. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>aidif</tt>
+</dt>
+<dl>   aidif=1 for implicit in time solution of the vertical mixing equation.
+   aidif=0 for explicit in time solution of the vertical mixing equation.
+   semi-implicit method with 0 &lt; aidif &lt; 1 is not fully supported in mom4. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>acor</tt>
+</dt>
+<dl>   acor=0.0 means explicit Coriolis force.  0.5 le acor le 1.0 means semi-implicit.
+   semi-implicit removes dtuv time step constraint associated with intertial oscillations,
+   but it leads to Coriolis force affecting energy balances. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>velocity_change_diag_freq</tt>
+</dt>
+<dl>   perform velocity_change_check every n timesteps (1 == every_tstep). <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>velocity_change_check</tt>
+</dt>
+<dl>   For checking to see whether the abs(vel(tau)-vel(tam1))
+   is greater than velocity_delta_max.  If so, then we likely have 
+   problems with leap-frog noise. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>velocity_change_max</tt>
+</dt>
+<dl>   For checking to see whether the abs(vel(tau)-vel(taum1)) &gt;velocity_change_max.
+   If so, then will bring the model down if have problems in too many places. <br>
+<span class="type">[real, units: meter/sec]</span>
+</dl>
+<dt>
+<tt>velocity_change_max_num</tt>
+</dt>
+<dl>   Maximum number of points allowed where abs(vel(tau)-vel(taum1)) &gt;velocity_change_max. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>energy_diag_freq</tt>
+</dt>
+<dl>   perform energy analysis every n timesteps (1 == every_tstep). <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>debug</tt>
+</dt>
+<dl>   For overall model debugging. Set true to print cksums at 
+   each timestep for debugging purposes. <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

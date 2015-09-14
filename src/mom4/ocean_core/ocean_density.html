@@ -1,0 +1,638 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_density_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_density_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Stephen.Griffies@noaa.gov">   S.M. Griffies </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_core">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Compute density and related quantities. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module computes the in-situ density and its partial derivatives with 
+   respect to potential temperature and with respect to salinity.  
+   <br>
+<br>
+   Based on McDougall, Wright, Jackett, and Feistel (2002).  This 
+   equation of state is valid over the range: 
+   <br>
+<br>
+   0psu &lt;= salinity &lt;= 40 psu
+   <br>
+<br>
+   -3C &lt;= theta &lt;= 40C
+   <br>
+<br>
+   0dbar &lt;= pressure &lt;= 8000dbar 
+   <br>
+<br>
+   Input variables are the following:
+   <br>
+<br>
+   salinity in psu
+   <br>
+<br>
+   potential temperature (theta) in deg C
+   <br>
+<br>
+   pressure in dbars  (1bar = 10dbar = 10^5 Newton/m^2 = 10^5 Pascals). 
+   Note that in the ocean, pressure increases roughly by 1dbar for each meter depth.
+   Also note that pressure is the "gauge" pressure, which is the absolute pressure
+   minus the pressure of a standard atmosphere, which is 10.1325 dbars.
+   <br>
+<br>
+   check values (kindly provided by David Jackett) <br>   rho(s=20psu,theta=20C,p=1000dbar)   = 1017.72674313979 (kg/m^3) <br>   alpha(s=20psu,theta=20C,p=1000dbar) = 2.524181985549684e-4 (1/C) <br>   beta(s=20psu,theta=20C,p=1000dbar)  = 7.382804621244401e-4 (1/psu) <br>   This equation of state should be suitable for all purposes of realistic 
+   ocean climate modeling. 
+   <br>
+<br>
+   B. Linear equation for use in idealized Boussinesq studies
+   <br>
+<br>
+   This equation renders density a linear function of potential 
+   temperature.  All nonlinearities are ignored, as are salinity and 
+   pressure effects.  Since there are no compressibility effects in 
+   this equations of state, it is only appropriate for Boussinesq
+   studies.
+   <br>
+<br>
+   The valid range for T and S is arbitrary for linearized density.
+   However the range is restricted to the range for the standard EOS
+   to keep density gradients within reasonable limits.
+   So valid ranges are restricted to s=0 to 50 psu, t=-10 to 50 deg C
+   <br>
+<br> 
+</div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>      constants_mod<br>   diag_manager_mod<br>            fms_mod<br>    mpp_domains_mod<br>            mpp_mod<br>       platform_mod<br>   time_manager_mod<br>  ocean_domains_mod<br>ocean_operators_mod<br> ocean_pressure_mod<br>    ocean_types_mod<br>     ocean_util_mod<br>ocean_workspace_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_density_init">ocean_density_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#update_ocean_density">update_ocean_density</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#update_ocean_density_taup1">update_ocean_density_taup1</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_field">density_field</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_level">density_level</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_line">density_line</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#potential_density">potential_density</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_sfc">density_sfc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_point">density_point</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_derivs_field">density_derivs_field</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_derivs_point">density_derivs_point</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_delta_z">density_delta_z</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#density_delta_sfc">density_delta_sfc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_density_end">ocean_density_end</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_density_chksum">ocean_density_chksum</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_density_init"></a>
+<h4>ocean_density_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the density module </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="update_ocean_density"></a>
+<h4>update_ocean_density</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute ocean density and related fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="update_ocean_density_taup1"></a>
+<h4>update_ocean_density_taup1</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute ocean density at taup1 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_field"></a>
+<h4>density_field</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute density for all grid points.  
+   Note that pressure here is 
+   gauge pressure = absolute pressure - press_standard 
+   and salinity is in model units (psu). </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_level"></a>
+<h4>density_level</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute density at a particular k-level. Note that pressure here is 
+   the gauge pressure = absolute pressure - press_standard </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_line"></a>
+<h4>density_line</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute density at a particular k-level and j index.  This scheme
+   is used in the vectorized version of the full convection scheme. 
+   Note that pressure here is the 
+   gauge pressure = absolute pressure - press_standard </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="potential_density"></a>
+<h4>potential_density</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute potential density referenced to some given gauge pressure. 
+   Note that potential density referenced to the surface (i.e., sigma_0)
+   has a zero gauge pressure, so pressure=0.0 should be the argument
+   to the function. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_sfc"></a>
+<h4>density_sfc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute density as a function of surface salinity, 
+   surface theta, and insitu gauge pressure. 
+   For use in KPP mixed layer scheme </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_point"></a>
+<h4>density_point</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute density at a single model grid point. Note that pressure here  
+   is the gauge pressure = absolute pressure - press_standard </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_derivs_field"></a>
+<h4>density_derivs_field</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute partial derivative of density with respect to potential 
+   temperature and with respect to salinity.  Hold pressure constant.  
+   Pressure here is gauge pressure = absolute press - press_standard </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_derivs_point"></a>
+<h4>density_derivs_point</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute partial derivative of density with respect to potential 
+   temperature and with respect to salinity.  Do so here for a point. 
+   Pressure here is gauge pressure = absolute pressure - press_standard </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_delta_z"></a>
+<h4>density_delta_z</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   rho(k)-rho(k+1) for all i,j with both temperatures referenced to the 
+   deeper pressure depth.  Of use for KPP scheme. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="density_delta_sfc"></a>
+<h4>density_delta_sfc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   rho(1)-rho(k+1) for all i,j. Of use for KPP scheme. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_density_end"></a>
+<h4>ocean_density_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Write density field to a restart. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_density_chksum"></a>
+<h4>ocean_density_chksum</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute checksums for density. </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_density_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>s_test</tt>
+</dt>
+<dl>   Salinity for testing the EOS. <br>
+<span class="type">[real, units: psu]</span>
+</dl>
+<dt>
+<tt>press_standard</tt>
+</dt>
+<dl>   Standard atmospheric pressure (dbar).  The realistic 
+   EOS used in mom4 requires gauge pressuer as an argument
+   rather than absolute pressure.  Gauge pressure is 
+   absolute pressure minus a standard atmospheric pressure 
+   of 10.1325dbar.  
+   For models that do have a realistic atmospheric loading, then it
+   is appropriate to remove 10.1325dbar prior to computing the EOS.
+   For those cases with zero atmospheric pressure, then it is not
+   necessary to remove the standard atmosphere.  As most model are
+   presently run with zero atmospheric pressure, the default for the 
+   press_standard is 0.0. <br>
+<span class="type">[real, units: dbar]</span>
+</dl>
+<dt>
+<tt>t_test</tt>
+</dt>
+<dl>   Potential temperature for testing the EOS. <br>
+<span class="type">[real, units: C]</span>
+</dl>
+<dt>
+<tt>p_test</tt>
+</dt>
+<dl>   Gauge pressure for testing the EOS. <br>
+<span class="type">[real, units: dbar]</span>
+</dl>
+<dt>
+<tt>linear_eos</tt>
+</dt>
+<dl>   Set to true if wish to use the linear equation of state. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>alpha_linear_eos</tt>
+</dt>
+<dl>   Constant "thermal expansion coefficient" for EOS 
+   rho = rho0 - alpha_linear_eos*theta + beta_linear_eos*salinity <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>beta_linear_eos</tt>
+</dt>
+<dl>   Constant "saline contraction coefficient" for EOS 
+   rho = rho0 - alpha_linear_eos*theta + beta_linear_eos*salinity <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>potrho_press</tt>
+</dt>
+<dl>   Gauge pressure for computing diagnostic potential density <br>
+<span class="type">[real, units: dbar]</span>
+</dl>
+<dt>
+<tt>potrho_min</tt>
+</dt>
+<dl>   Minimum potential density used to partition vertical according to potential density. <br>
+<span class="type">[real, units: kg/m^3]</span>
+</dl>
+<dt>
+<tt>potrho_max</tt>
+</dt>
+<dl>   Maximum potential density used to partition vertical according to potential density. <br>
+<span class="type">[real, units: kg/m^3]</span>
+</dl>
+<dt>
+<tt>theta_min</tt>
+</dt>
+<dl>   Minimum potential temperature used to partition vertical according to theta. <br>
+<span class="type">[real, units: C]</span>
+</dl>
+<dt>
+<tt>theta_max</tt>
+</dt>
+<dl>   Maximum potential temperature used to partition vertical according to theta. <br>
+<span class="type">[real, units: C]</span>
+</dl>
+<dt>
+<tt>layer_nk</tt>
+</dt>
+<dl>   Number of classes used to partition vertical according to potential density
+   or potential temperature. Used for diagnostics. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>debug_density</tt>
+</dt>
+<dl>   For debugging nonlinear equation of state <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<a name="REFERENCES"></a>
+<hr>
+<h4>REFERENCES</h4>
+<!-- BEGIN REFERENCES -->
+<div>
+<ol>
+<li>   Feistel (2003)
+   A new extended Gibbs thermodynamic potential of seawater
+   Progress in Oceanography. vol 58, pages 43-114. </li>
+<li>   McDougall, Jackett, Wright, and Feistel (2002)
+   Accurate and computationally efficient algorithms for 
+   potential temperatue and density of seawater
+   Journal of Atmospheric and Oceanic Technology, submitted 2002 </li>
+<li>   Jackett, McDougall, Feistel, Wright, and Griffies (2004)
+   Updated algorithms for density, potential temperature, 
+   conservative temperature, and freezing temperature of 
+   seawater.  
+   Journal of Atmospheric and Oceanic Technology, 2004 submitted </li>
+<li>   S.M. Griffies, M.J. Harrison,  R.C. Pacanowski, and A. Rosati
+   A Technical Guide to MOM4 (2003) </li>
+<li>   S.M. Griffies, R.C. Pacanowski, R.M. Schmidt, and V. Balaji
+   Tracer Conservation with an Explicit Free Surface Method for 
+   Z-coordinate Ocean Models
+   Monthly Weather Review (2001) vol 129 pages 1081--1098 </li>
+</ol>
+</div>
+<br>
+<!-- END REFERENCES -->
+<a name="COMPILER SPECIFICS"></a>
+<hr>
+<h4>COMPILER SPECIFICS</h4>
+<!-- BEGIN COMPILER SPECIFICS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END COMPILER SPECIFICS -->
+<a name="PRECOMPILER OPTIONS"></a>
+<hr>
+<h4>PRECOMPILER OPTIONS</h4>
+<!-- BEGIN PRECOMPILER OPTIONS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END PRECOMPILER OPTIONS -->
+<a name="LOADER OPTIONS"></a>
+<hr>
+<h4>LOADER OPTIONS</h4>
+<!-- BEGIN LOADER -->
+<div>None.<br>
+<br>
+</div>
+<!-- END LOADER OPTIONS -->
+<a name="TEST PROGRAM"></a>
+<hr>
+<h4>TEST PROGRAM</h4>
+<!-- BEGIN TEST PROGRAM -->
+<div>None.<br>
+</div>
+<br>
+<!-- END TEST PROGRAM -->
+<a name="KNOWN BUGS"></a>
+<hr>
+<h4>KNOWN BUGS</h4>
+<!-- BEGIN KNOWN BUGS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END KNOWN BUGS -->
+<a name="NOTES"></a>
+<hr>
+<h4>NOTES</h4>
+<!-- BEGIN NOTES -->
+<div>   Density is computed as a function of potential temperature (C), salinity (psu),
+   and in-situ pressure (dbar).  The pressure contribution includes that from 
+   the free surface height and the atmospheric pressure.  Because the baroclinic
+   component of the hydrostatic pressure is not known until the density is known, 
+   the baroclinic pressure contribution to density is lagged by a single time step.  
+   rho(tau) = rho[theta(tau),s(tau), p_atm(tau) + p_fs(tau) + p_baroclinic(tau-1)] </div>
+<br>
+<!-- END NOTES -->
+<a name="FUTURE PLANS"></a>
+<hr>
+<h4>FUTURE PLANS</h4>
+<!-- BEGIN FUTURE PLANS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END FUTURE PLANS -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

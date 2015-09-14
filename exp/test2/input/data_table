@@ -1,0 +1,14 @@
+# format for data_table:
+# gridname, fieldname_code, fieldname_file, filename, ongrid, factor
+# If user wants to override fieldname_code with a const set fieldname_file = ""
+# and factor = const
+"OCN", "u_flux", "taux" , "INPUT/tau.nc",.true.,1.0
+"OCN", "v_flux", "tauy" , "INPUT/tau.nc",.true.,1.0
+"OCN", "lprec",  "lprec", "INPUT/water_flux.nc",.true.,1.0
+"OCN", "sw_flux","","",.false.,0.0
+"OCN", "lw_flux","","",.false.,0.0
+"OCN", "fprec","","",.true.,0.0
+"OCN", "t_flux","","",.false.,0.0
+"OCN", "q_flux","","",.false.,0.0
+"OCN", "p","","",.true.,0.0
+

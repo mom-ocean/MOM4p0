@@ -1,0 +1,686 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_tracer_diag_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_tracer_diag_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Stephen.Griffies@noaa.gov">   S.M. Griffies </a>,&nbsp;
+    <a href="mailto:Ronald.Pacanowski@noaa.gov">   R.C. Pacanowski </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_diag">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Routines for tracer diagnostics </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   Routines for tracer diagnostics.  Some are printed to ascii output, some are sent 
+   to diagnostic manager. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>        constants_mod<br>     diag_manager_mod<br>              fms_mod<br>      mpp_domains_mod<br>              mpp_mod<br>     time_manager_mod<br>    ocean_density_mod<br>    ocean_domains_mod<br>        ocean_obc_mod<br>ocean_tracer_util_mod<br>      ocean_types_mod<br>       ocean_util_mod<br>  ocean_workspace_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_tracer_diag_init">ocean_tracer_diag_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_tracer_diagnostics">ocean_tracer_diagnostics</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#mixed_layer_depth">mixed_layer_depth</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#tracer_change">tracer_change</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#total_tracer">total_tracer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#total_volume">total_volume</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#tracer_integrals">tracer_integrals</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#tracer_land_cell_check">tracer_land_cell_check</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#volume_conservation">volume_conservation</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#tracer_conservation">tracer_conservation</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#diagnose_kappa_sort">diagnose_kappa_sort</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#diagnose_kappa_simple">diagnose_kappa_simple</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#diagnose_depth_of_potrho">diagnose_depth_of_potrho</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#diagnose_depth_of_theta">diagnose_depth_of_theta</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#potrho_mixed_layer">potrho_mixed_layer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#send_total_tracer">send_total_tracer</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_tracer_diag_init"></a>
+<h4>ocean_tracer_diag_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the ocean_tracer_diag module containing subroutines
+   diagnosing tracer related properties of the simulation.  These are 
+   not terms in the equations, but rather they are diagnosed from 
+   terms. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_tracer_diagnostics"></a>
+<h4>ocean_tracer_diagnostics</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Call diagnostics related to the tracer fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="mixed_layer_depth"></a>
+<h4>mixed_layer_depth</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Diagnose mixed layer depth (m), which is defined as the depth ( &gt; 0 )
+   where the buoyancy difference with respect to the surface level is
+   equal to sfchmxl (=0.0003) (m/s2). Use dbsfc, which is defined on zt levels.
+   Note that the diagnosed mixed layer depth is only used for diagnostics. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="tracer_change"></a>
+<h4>tracer_change</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute change in tracer over a time step.  Compate global change
+   in tracer to global integral of boundary forcing.  Compute error
+   due to any mis-match.  This routine is very useful for detecting
+   bugs in tracer routines.  
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="total_tracer"></a>
+<h4>total_tracer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute integrated tracer in model. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="total_volume"></a>
+<h4>total_volume</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute total ocean tracer cell volume. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="tracer_integrals"></a>
+<h4>tracer_integrals</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute some integrated tracer diagnostics. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="tracer_land_cell_check"></a>
+<h4>tracer_land_cell_check</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Check to be sure ocean tracer is zero over land </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="volume_conservation"></a>
+<h4>volume_conservation</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute change in volume over many time steps, and compare to the 
+   input of volume through surface to check for volume conservation.
+   <br>
+<br>
+   ============================================================
+   <br>
+<br>
+   threelevel scheme 
+   <br>
+<br>
+   Here is the logic for the accumulation of the fluxes and 
+   comparisons between volumes at the start and the end. 
+   <br>
+<br>
+   Consider accumulation over four leap-frog time steps. 
+   Ignore time filtering.  
+   <br>
+<br>
+   eta(2) = eta(0) + 2deta*F(1)  taup1=2, taum1=0, tau=1 
+   <br>
+<br>
+   eta(3) = eta(1) + 2deta*F(2)  taup1=3, taum1=1, tau=2 
+   <br>
+<br>
+   eta(4) = eta(2) + 2deta*F(3)  taup1=4, taum1=2, tau=3 
+   <br>
+<br>
+   eta(5) = eta(3) + 2deta*F(4)  taup1=5, taum1=3, tau=4 
+   <br>
+<br>
+   Hence,
+   <br>
+<br>
+   [eta(4) + eta(5)] = [eta(0) + eta(1)] + 2deta*[F(1)+F(2)+F(3)+F(4)]
+   <br>
+<br>
+   For this example, we have 
+   <br>
+<br>
+   itts_volume=1 through itte_volume=4 for accumulating fluxes
+   <br>
+<br>
+   itt=itts_volume=1=tau we use taum1=0 and tau=1 to get starting volume
+   <br>
+<br>
+   itt=itte_volume=4=tau we use tau=4 and taup1=5 to get the final volume 
+   <br>
+<br>
+   ============================================================
+   <br>
+<br>
+   twolevel scheme
+   <br>
+<br>
+   Here is the logic for the accumulation of the fluxes and 
+   comparisons between volumes at the start and the end. 
+   <br>
+<br>
+   Consider accumulation over four time steps. 
+   <br>
+<br>
+   eta(3/2) = eta(1/2) + deta*F(1)   taup1=3/2, taum1=1/2, tau=1 
+   <br>
+<br>
+   eta(5/2) = eta(3/2) + deta*F(2)   taup1=5/2, taum1=3/2, tau=2 
+   <br>
+<br>
+   eta(7/2) = eta(5/2) + deta*F(3)   taup1=7/2, taum1=5/2, tau=3 
+   <br>
+<br>
+   eta(9/2) = eta(7/2) + deta*F(4)   taup1=9/2, taum1=7/2, tau=4 
+   <br>
+<br>
+   Hence,
+   <br>
+<br>
+   eta(9/2) = eta(1/2) + deta*[F(1)+F(2)+F(3)+F(4)]
+   <br>
+<br>
+   For this example, we have 
+   <br>
+<br>
+   itts_volume=1 through itte_volume=4 for accumulating fluxes
+   <br>
+<br>
+   itt=itts_volume=1=tau we use taum1=1/2 to get starting volume
+   <br>
+<br>
+   itt=itte_volume=4=tau we use taup1=9/2 to get the final volume 
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="tracer_conservation"></a>
+<h4>tracer_conservation</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute change in global integrated tracer over many time steps,
+   and compare to the input of tracer through the boundaries to 
+   check for total tracer conservation.
+   <br>
+<br>
+   Accumulate fluxes as in the volume_conservation diagnostic. 
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="diagnose_kappa_sort"></a>
+<h4>diagnose_kappa_sort</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Routine to diagnose the amount of mixing between classes of a 
+   particular tracer.  Temperature is used as default.
+   Method follows that used in the paper 
+   <br>
+<br>
+   Spurious diapycnal mixing associated with advection in a
+   z-coordinate ocean model, 2000: S.M. Griffies, R.C.
+   Pacanowski, and R.W. Hallberg. Monthly Weather Review, vol 128, 538--564.
+   <br>
+<br>
+   This diagnostic is most useful when computing the levels of 
+   effective dia-tracer mixing occuring in a model.
+   <br>
+<br>
+   Algorithm notes:
+   <br>
+<br>
+   -assumes flat ocean bottom--non-flat bottoms loose the precise relation 
+   between sorted depth and true ocean depth.  This is a minor inconvenience.
+   <br>
+<br>
+   -defines some global arrays, so requires large memory.
+   this restriction can be removed if parallel sort is 
+   implemented.  so far, such has not been done.  
+   volunteers are welcome to contribute a parallel sort.  
+   <br>
+<br>
+   -Effective kappa is set to zero at bottom of bottom-most cell
+   and top of top-most cell in order to ensure zero flux 
+   conditions at the column boundaries.  This is not appropriate
+   when running with surface and/or bottom no-flux conditions.  
+   <br>
+<br>
+   -Robust effective kappas require &gt; 4 time steps--steps 1-4 corrupted.  
+   -Uncomment the !!$ lines when link to the proper NAG routines. 
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="diagnose_kappa_simple"></a>
+<h4>diagnose_kappa_simple</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Routine to diagnose the amount of mixing between classes of a 
+   particular tracer.  Temperature is used as default.
+   Compute horizontal average of temp to define a stable profile.
+   Evolution of this profile defines an effective diffusity. 
+   This diffusivity is different than the one diagnosed
+   from the adiabatic sorting approach.  The sorting approach is 
+   more relevant.  The two approaches agree when there 
+   is zero baroclinicity, and the present simple scheme is 
+   useful ONLY for debugging the more complex sorting routine. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="diagnose_depth_of_potrho"></a>
+<h4>diagnose_depth_of_potrho</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Diagnose depth (m) of a potential density surface.  Method uses linear 
+   interpolation to find the depth of a potential rho surface.
+   Scheme currently does not forward (backwards) interpolate if 
+   rho surface lies within lowest (uppermost) grid cell. Nor does 
+   it account for partial bottom cells or free surface.  Hence, depths
+   for isopycnals near surface or bottom boundaries may be corrupted. 
+   Diagnostic only makes sense when potrho is monotonically
+   increasing with depth.
+   <br>
+<br>
+   Author: Harper.Simmons@noaa.gov
+   Zhi.Liang@noaa.gov </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="diagnose_depth_of_theta"></a>
+<h4>diagnose_depth_of_theta</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Diagnose depth (m) of a potential temperature surface.  Method uses  
+   linear interpolation to find the depth of a potential temp surface.
+   Scheme currently does not forward (backwards) interpolate if 
+   theta surface lies within lowest (uppermost) grid cell. Nor does 
+   it account for partial bottom cells or free surface.  Hence, depths
+   for theta surfaces near ocean surface or bottom boundaries may be 
+   corrupted. Diagnostic only makes sense when theta is monotonically
+   decreasing with depth.
+   <br>
+<br>
+   Author: Stephen.Griffies@noaa.gov
+   Zhi.Liang@noaa.gov 
+   based on "diagnose_depth_of_potrho" by Harper.Simmons@noaa.gov </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="potrho_mixed_layer"></a>
+<h4>potrho_mixed_layer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Determine mixed layer depth and potential density at mixed layer base  
+   according to depth at which buoyancy is greater than buoyancy_crit
+   relative to the surface. Compute the buoyancy using potential 
+   density, rather than the insitu density, since we aim for this 
+   diagnostic to be comparable to diagnostics from isopcynal models. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="send_total_tracer"></a>
+<h4>send_total_tracer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Send total tracer to diagnostic manager. </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_tracer_diag_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>tracer_conserve_days</tt>
+</dt>
+<dl>   Number of days between which compute the tracer conservation diagnostics. <br>
+<span class="type">[real, units: days]</span>
+</dl>
+<dt>
+<tt>diag_freq</tt>
+</dt>
+<dl>   Number of time steps between which compute the diagnostics. <br>
+<span class="type">[integer, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>diagnose_mixing_simple</tt>
+</dt>
+<dl>   Set true for using diagnose_mixing_simple. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>diagnose_mixing_sort</tt>
+</dt>
+<dl>   Set true for using diagnose_mixing_sort. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>debug_diagnose_mixingA</tt>
+</dt>
+<dl>   Set true for help with debugging the diagnostic for mixing. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>debug_diagnose_mixingB</tt>
+</dt>
+<dl>   Set true for more help with debugging the diagnostic for mixing. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>smooth_kappa_sort</tt>
+</dt>
+<dl>   Set true to smooth the diagnosed mixing from the sorted approach. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>rho_grad_min</tt>
+</dt>
+<dl>   min vertical density gradient (kg/m^3/m) used in computing kappa sorted
+   in the diagnostic mixing sorted. <br>
+<span class="type">[real, units: kg/m^3/m]</span>
+</dl>
+<dt>
+<tt>rho_grad_max</tt>
+</dt>
+<dl>   max vertical density gradient (kg/m^3/m) used in computing kappa sorted <br>
+<span class="type">[real, units: kg/m^3/m]</span>
+</dl>
+<dt>
+<tt>buoyancy_crit</tt>
+</dt>
+<dl>   Critical buoyancy difference relative to surface for computing mixed layer depth. <br>
+<span class="type">[real, units: m^2/sec]</span>
+</dl>
+<dt>
+<tt>psu2ppt</tt>
+</dt>
+<dl>   The realistic EOS used in mom4 requires salinity to 
+   use the Practical Salinity Scale (pss).  This scale is 
+   also known as the Practical Salinity Unit (psu).
+   Additionally, ocean measurements use the psu scale
+   Hence, mom4 interprets its salinity as psu.  
+   <br>
+<br>
+   However, salinity as an absolute concentration in 
+   parts per thousand is more convenient to use when 
+   performing budget analyses such as in this module.  
+   Conversion between pss and ppt depends on the precise
+   ratio of ions in the seawater. Hence, the conversion
+   is not constant. However, it is close to a constant,
+   as reported in Jackett etal (2004).  For purposes of 
+   budgets, we take this conversion as a constant.  
+   The conversion is 
+   <br>
+<br>
+   s(ppt) = psu2ppt * s(psu) 
+   <br>
+<br>
+   where again s(psu) is what mom4 carries as its 
+   prognostic salinity field. 
+   <br>
+<br>
+   Jackett etal (2004), correcting a type in equation (53) 
+   of Feistel (2003), report that 
+   <br>
+<br>
+   s(ppt) = 1.004867 * s(psu)
+   <br>
+<br> 
+<br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>do_bitwise_exact_sum</tt>
+</dt>
+<dl>   Set true to do bitwise exact global sum. When it is false, the global
+   sum will be non-bitwise_exact, but will significantly increase efficiency. 
+   The default value is false. <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta name="generator" content=
+    "HTML Tidy for Linux/x86 (vers 1st September 2002), see www.w3.org">
+    <meta http-equiv="Content-Type" content=
+    "text/html; charset=ISO-8859-1">
+    <title>MOM4 Quickstart Guide</title>
+    <link rel="stylesheet" href=
+    "http://www.gfdl.noaa.gov/~fms/style/docbook.css" type=
+    "text/css">
+    <meta name="generator" content=
+    "DocBook XSL Stylesheets V1.64.1">
+    <meta name="description" content=
+    "Brief instructions for running MOM4 experiments">
+  </head>
+  <body bgcolor="white" text="black" link="#0000FF" vlink="#840084"
+  alink="#0000FF">
+    <div class="article" lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h1 class="title"><a name="id2398384"></a>MOM4
+            Quickstart Guide</h1>
+          </div>
+          <div>
+            <div class="author">
+              <h3 class="author"><span class=
+              "firstname">Giang</span> <span class=
+              "surname">Nong</span></h3>
+              <a href="" onclick=
+              "javascript:window.location='mai'+'lt'+'o:'+'Giang.Nong'+'%40'+'noaa.gov'"
+               onmouseover=
+              "javascript:window.status='send ema'+'il';return true;"
+               onmouseout=
+              "javascript:window.status='';return true;">Giang.Nong<img
+               border="0" src=
+              "http://www.gfdl.noaa.gov/fms/images/atgreen.png"
+              alt="&amp;#64;" style=
+              "display:inline; height:.8em;">noaa.gov</a>
+            </div>
+          </div>
+          <div>
+            <div class="abstract">
+              <p class="title"><b>Abstract</b></p>
+              <p>Brief instructions for running MOM4
+              experiments</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+      </div>
+      <div xmlns="http://www.w3.org/TR/xhtml1/transitional" class=
+      "toc">
+        <p class="subtitle"><b>Table of Contents</b></p>
+        <dl>
+          <dt xmlns=""><span class="section"><a href=
+          "#source%20code%20and%20scripts">1. Get the source code
+          and scripts through CVS checkout or
+          download</a></span></dt>
+          <dt xmlns=""><span class="section"><a href=
+          "#Prepare%20preprocessing%20data">2. Prepare
+          preprocessing data</a></span></dt>
+          <dd xmlns="">
+            <dl>
+              <dt><span class="section"><a href=
+              "#Get%20data%20via%20NOMADS%20server">2.1. Get data
+              via NOMADS server</a></span></dt>
+              <dt><span class="section"><a href=
+              "#Create%20data%20from%20scratch">2.2. Create data
+              from scratch</a></span></dt>
+            </dl>
+          </dd>
+          <dt xmlns=""><span class="section"><a href=
+          "#Compile%20the%20source%20code%20and%20execute%20the%20runscript">
+          3. Compile the source code and execute the
+          runscript</a></span></dt>
+          <dt xmlns=""><span class="section"><a href=
+          "#Examine%20the%20output">4. Examine the
+          output</a></span></dt>
+          <dt xmlns=""><span class="section"><a href=
+          "#Brief%20description%20of%20MOM4%20experiments">5. Brief
+          description of MOM4 experiments</a></span></dt>
+        </dl>
+      </div>
+      <div class="section" lang="en">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title" style="clear: both"><a name=
+              "source code and scripts"></a>1.&nbsp;Get the source
+              code and scripts through CVS checkout or
+              download</h2>
+            </div>
+          </div>
+        </div>
+        <p>After you do CVS checkout successfully a directory will
+        be created. For convenience, this directory will be
+        referred to as the <tt class="filename">ROOT</tt>
+        directory. A readme file in the <tt class=
+        "filename">ROOT</tt> directory will tell you the contents
+        of each subdirectory under <tt class=
+        "filename">ROOT</tt>.</p>
+        <p>In the sections below, <tt class=
+        "filename">test_case</tt> is a generic name referring to
+        the name of a specific experiment you are working on. Thus,
+        <tt class="filename">test_case</tt> in the path <tt class=
+        "filename">ROOT/exp/test_case</tt> should be replaced by a
+        concrete name (for example <tt class="filename">test1</tt>,
+        <tt class="filename">test2</tt> , etc.)</p>
+      </div>
+      <div class="section" lang="en">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title" style="clear: both"><a name=
+              "Prepare preprocessing data"></a>2.&nbsp;Prepare
+              preprocessing data</h2>
+            </div>
+          </div>
+        </div>
+        <p>There are two ways of creating data for MOM4
+        experiments. The easy way is to get data from NOMADS
+        server. The hard (but more independent) way is to create
+        data from scratch.</p>
+        <div class="section" lang="en">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a name=
+                "Get data via NOMADS server"></a>2.1.&nbsp;Get data
+                via NOMADS server</h3>
+              </div>
+            </div>
+          </div>
+          <p>Users first need to create directory preprocessing for
+          each test case:</p>
+<pre class="programlisting">
+         mkdir ROOT/exp/test_case/preprocessing
+      
+</pre>
+          <p>The data files in NOMADS are organized in directories
+          having the same name as name of <tt class=
+          "filename">test_case</tt> (data for <tt class=
+          "filename">test1</tt> are in directory <tt class=
+          "filename">test1</tt>, etc.). Go to the experiment of
+          your interest (see "Brief description of MOM4
+          experiments" in the MOM4 manual) and start downloading
+          file <tt class="filename">preprocessing.tar</tt> to <tt
+          class="filename">ROOT/exp/test_case/preprocessing</tt>.
+          You will need to uncompress the file <tt class=
+          "filename">preprocessing.tar</tt> after downloading. The
+          command for uncompressing a .tar file is:</p>
+<pre class="programlisting">
+       tar -xvf filename.tar
+      
+</pre>
+          <p>Additional note for experiments test4 and test5: In
+          addition to all data from preprocessing directory
+          described above you will also need to:</p>
+          <div class="itemizedlist">
+            <ul type="disc">
+              <li>
+                create a directory called <tt class=
+                "filename">data</tt> at the same level as <tt
+                class="filename">ROOT/exp/test_case</tt>. 
+<pre class="programlisting">
+             mkdir ROOT/exp/data
+             cd ROOT/exp/data
+          
+</pre>
+              </li>
+              <li>
+                create 4 subdirectories inside <tt class=
+                "filename">data</tt>: 
+<pre class="programlisting">
+             mkdir ice lad omip_mpi omip_ncar
+          
+</pre>
+              </li>
+              <li>download data from the directory <tt class=
+              "filename">Data</tt> in NOMADS to the corresponding
+              subdirectory in <tt class="filename">data</tt>.</li>
+            </ul>
+          </div>
+          <p>Note that data in (<tt class="filename">ASCII,
+          HISTORY, RESTART</tt>) are <span class=
+          "emphasis"><em>NOT</em></span> needed for running
+          experiments. They are for the purpose of comparing your
+          results with results produced at GFDL.</p>
+        </div>
+        <div class="section" lang="en">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a name=
+                "Create data from scratch"></a>2.2.&nbsp;Create
+                data from scratch</h3>
+              </div>
+            </div>
+          </div>
+          <p>Tools are provided so that users can create data from
+          scratch. For more details refer to section "Setting up an
+          experiment with MOM4" in the manual and the code in <tt
+          class="filename">ROOT/src/preprocessing</tt>.</p>
+        </div>
+      </div>
+      <div class="section" lang="en">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title" style="clear: both"><a name=
+              "Compile the source code and execute the runscript"></a>3.&nbsp;Compile
+              the source code and execute the runscript</h2>
+            </div>
+          </div>
+        </div>
+        <p>MOM4 requires that NetCDF and MPI libraries be installed
+        on users' platform.</p>
+        <p>MOM4 code can be compiled and run with two memory
+        allocation schemes: <span class=
+        "emphasis"><em>DYNAMIC</em></span> and <span class=
+        "emphasis"><em>STATIC</em></span>. Almost all compile
+        scripts provided here are for the <span class=
+        "emphasis"><em>DYNAMIC</em></span> option. For the <span
+        class="emphasis"><em>STATIC</em></span> option see <a href=
+        "#Brief%20description%20of%20MOM4%20experiments" title=
+        "5.&nbsp;Brief description of MOM4 experiments">Section&nbsp;5,
+        &ldquo;Brief description of MOM4 experiments&rdquo;</a>
+        below.</p>
+        <p>Under <tt class="filename">ROOT/exp/test_case</tt> there
+        is one script for both compile and run. All scripts have
+        the name beginning with <tt class="filename">run_mom4</tt>
+        followed by <tt class="filename">test_case</tt> name (<tt
+        class="filename">test1, test2,</tt> etc.). Before executing
+        the script make sure to change the platform to the platform
+        of your computer system. The platform is specified by:</p>
+<pre class="programlisting">
+       set platform = sgi # this is for sgi platform
+    
+</pre>
+        <p>Users may also want to change the following before
+        starting compilation and execution:</p>
+<pre class="programlisting">
+       set npes = number of processors used in the run
+       set days = the length of the run in days
+       set months = the length of the run in months
+    
+</pre>
+        <p>Those are the most basic settings for any run.
+        Experienced users may go to the namelist section in the
+        runscript to set the values for namelist variables. Details
+        on namelists can be found in the corresponding Fortran
+        module.</p>
+      </div>
+      <div class="section" lang="en">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title" style="clear: both"><a name=
+              "Examine the output"></a>4.&nbsp;Examine the
+              output</h2>
+            </div>
+          </div>
+        </div>
+        <p>To keep the runscript simple all output files of a model
+        run will be in the work directory. There are three types of
+        output files:</p>
+        <div class="orderedlist">
+          <ol type="1">
+            <li>ascii file with <tt class="filename">.fms.out</tt>
+            extension: the description of the setup of the run and
+            verbose comments printed out during the run.</li>
+            <li>restart files in <tt class="filename">RESTART</tt>
+            directory: the model fields necessary to initialize
+            future runs of the model.</li>
+            <li>history files with <tt class=
+            "filename">.nc.tar</tt> extension: output of the model,
+            both averaged over specified time intervals and
+            snapshots.</li>
+          </ol>
+        </div>
+        <p>The ascii file contains everything written to the screen
+        during model execution. The total time for model execution
+        as well as the times of separate modules are reported here.
+        All <tt class="filename">.tar</tt> files should be
+        decompressed for viewing. The decompress command is:</p>
+<pre class="programlisting">
+       tar -xvf filename.tar
+    
+</pre>
+        <p>Users will see result files in NetCDF format.
+        Postprocessing tools such as Ferret, ncview, grads or
+        matlab can be used to view data in these files.</p>
+      </div>
+      <div class="section" lang="en">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title" style="clear: both"><a name=
+              "Brief description of MOM4 experiments"></a>5.&nbsp;Brief
+              description of MOM4 experiments</h2>
+            </div>
+          </div>
+        </div>
+        <p>MOM4 is distributed with a set of test cases. These
+        tests are taken from models used at GFDL for testing the
+        numerical and computational integrity of the code.</p>
+        <div xmlns="http://www.w3.org/TR/xhtml1/transitional"
+        class="warning" style=
+        "margin-left: 0.5in; margin-right: 0.5in;">
+          <table border="0" summary="Warning">
+            <tr>
+              <td rowspan="2" align="center" valign="top" width=
+              "25"><img alt="[Warning]" src=
+              "images/warning.gif"></td>
+              <th class="admontitle">Warning</th>
+            </tr>
+            <tr>
+              <td colspan="2" align="left" valign="top">These
+              experiments are <span xmlns="" class=
+              "emphasis"><em>NOT</em></span> sanctioned for their
+              physical relevance. They are instead provided for the
+              user to learn how to run mom4, and to verify the
+              numerical and/or computational integrity of the code.
+              <span xmlns="" class=
+              "emphasis"><em>PLEASE</em></span> do not assume that
+              the experiments will run for more than the short time
+              selected in the sample run scripts.</td>
+            </tr>
+          </table>
+        </div>
+        <br>
+        <br>
+        <table class="simplelist" border="0" summary="Simple list">
+          <tr>
+            <td><tt class="filename">mom4_test1</tt>: flat bottom
+            sector model with simple physics. This model is very
+            small and can be easily run on a single workstation. It
+            should provide the user with a basic experience of
+            running mom4.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_test2</tt>: flat bottom
+            sector model which more fully tests some realistic
+            physics options. This experiment has the same grid as
+            test1, but it more thoroughly exercises the various
+            physics packages.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_test3A</tt>: east-west
+            channel with open boundary at west. This experiment is
+            an illustration of the open boundary condition
+            capability of mom4. Tracers include potential
+            temperature and salinity.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_test3B</tt>: solid wall
+            of twice domain size as test3A for testing OBC. This
+            experiment is used to verify the relevance of the
+            test3A solution at early times. That is, for early
+            times, the solution from test3A should agree with that
+            from test3B. Tracers include potential temperature and
+            salinity.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_test4</tt>: global
+            tripolar grid using roughly 3x3 resolution with 28
+            vertical levels and age, biotic, and cfc tracer
+            packages. Coupled to GFDL sea ice model.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_test5</tt>: global
+            tripolar grid using roughly "1-degree" resolution ocean
+            with 50 vertical levels coupled to the GFDL sea ice
+            model and forced with the German OMIP dataset. Tracers
+            include potential temperature, salinity, and age.</td>
+          </tr>
+          <tr>
+            <td><tt class="filename">mom4_iom</tt>: This is Indian
+            Ocean Community Model version 1.0 developed for
+            Intensive Course on Ocean Modeling held at CMMACS,
+            India, October 4-14, 2004.</td>
+          </tr>
+        </table>
+        <p>Experiments are based on mom4p0 branch. For increased
+        efficiency, the <tt class="option">-DSTATIC_MEMORY</tt>
+        compile option allows mom4 on the SGI to run about twice
+        the speed as dynamic memory allocation. On other platforms,
+        however, the performance of static option may vary
+        substantially. Notably, the static option requires each
+        processor to have identical sized domains, and for these
+        domains to be specified at compile time. Hence, a bit of
+        algebra is required prior to compiling the experiment.
+        Specifically, <tt class="option">layout</tt> in <tt class=
+        "option">ocean_model_nml</tt> namelist should be correctly
+        set. Example of runscript for static option is provided for
+        just one test case (test1_static) but users can build
+        compile and run scripts for other test cases based on this
+        example.</p>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="footer" style="position:relative;">
+      <div style="float:right; clear:right; text-align:right;">
+        Document Author: <a href="" onclick=
+        "javascript:window.location='mai'+'lt'+'o:'+'Giang.Nong'+'%40'+'noaa.gov'"
+         onmouseover=
+        "javascript:window.status='send ema'+'il';return true;"
+        onmouseout=
+        "javascript:window.status='';return true;">&nbsp;Giang&nbsp;Nong</a><br>
+        <a href="quickstart_guide.pdf">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; Download Document as PDF</a><br>
+        <div style=
+        "position:absolute; bottom:0px; float:right; clear:right; text-align:right;">
+          *Links on this page may cause you to leave the GFDL
+          website. The U.S. Government does not endorse any
+          non-Federal websites on this page.
+        </div>
+      </div>
+      <a href="http://www.noaa.gov/privacy.html">Privacy Policy</a>
+      | <a href=
+      "http://www.noaa.gov/disclaimer.html">Disclaimer</a><br>
+      <a href="http://www.doc.gov/">US Department of Commerce</a> |
+      <a href="http://www.noaa.gov/">NOAA</a> | <a href=
+      "http://www.oar.noaa.gov/">OAR</a> | <a href=
+      "http://www.gfdl.noaa.gov/">Geophysical Fluid Dynamics
+      Laboratory</a><br>
+       physical address: Princeton Forrestal Campus 201 Forrestal
+      Road, Princeton NJ, 08542-0308<br>
+       mailing address: PO Box 308, Princeton NJ, 08542-0308<br>
+       phone: (609) 452-6500 fax: (609) 987-5063<br>
+      <a href="mailto:oar.gfdl.webmaster-data1@noaa.gov">mailto:
+      web master</a><br>
+       last modified: May 13, 2005
+    </div>
+  </body>
+</html>

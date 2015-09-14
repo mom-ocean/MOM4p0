@@ -1,0 +1,15 @@
+"prog_tracers","ocean_mod","temp"
+
+horizontal-advection-scheme = mdfl_sweby
+vertical-advection-scheme = mdfl_sweby
+file_in = INPUT/ocean_temp_salt.res.nc
+file_out = RESTART/ocean_temp_salt.res.nc
+/
+
+"prog_tracers","ocean_mod","salt"
+
+horizontal-advection-scheme = mdfl_sweby
+vertical-advection-scheme = mdfl_sweby
+file_in = INPUT/ocean_temp_salt.res.nc
+file_out = RESTART/ocean_temp_salt.res.nc
+/

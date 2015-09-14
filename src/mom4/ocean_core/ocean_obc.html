@@ -1,0 +1,561 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_obc_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_obc_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:mschmidt@io-warnemuende.de">   Martin Schmidt </a>,&nbsp;
+    <a href="mailto:Zhi.Liang@noaa.gov">   Zhi Liang </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_core">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Open Boundary condition for mom4 ocean model. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module can extrapolate data on the open lateral boundaries for mom4 ocean model. Tracer and surface height 
+   are extrapolated on the boundary by using implicit radiation boundary conditions, velocities are calculated
+   on the boundary from a linear equation (omitted advection equation). The gradient of each field is supposed 
+   to be zero accross boundary. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>           constants_mod<br>       data_override_mod<br>        diag_manager_mod<br>       field_manager_mod<br>                 fms_mod<br>         mpp_domains_mod<br>                 mpp_mod<br>time_interp_external_mod<br>        time_manager_mod<br>      tracer_manager_mod<br>       ocean_domains_mod<br>         ocean_types_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_obc_freesurf">ocean_obc_freesurf</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#obc_update_boundary">obc_update_boundary</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_init">ocean_obc_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_tracer_init">ocean_obc_tracer_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_prepare">ocean_obc_prepare</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_adjust_advel">ocean_obc_adjust_advel</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_adjust_forcing_fs">ocean_obc_adjust_forcing_fs</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_tracer">ocean_obc_tracer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_obc_end">ocean_obc_end</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_obc_freesurf"></a>
+<h4>ocean_obc_freesurf</h4>
+<table cellspacing="0" CELLPADDING="2" BORDER="2">
+<tr>
+<td>
+<pre>  subroutine ocean_obc_freesurf(eta, taum1, tau, taup1, tstep)</pre>
+</td>
+</tr>
+<tr>
+<td>
+<pre>  subroutine ocean_obc_freesurf(Time, Ext_mode)
+    type(ocean_time_type), intent(in)             :: Time
+    type(ocean_external_mode_type), intent(inout) :: Ext_mode</pre>
+</td>
+</tr>
+</table>
+<br>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Extrapolate surface height on the open boundaries for ocean model. </dd>
+<br>
+<br>
+<dt>
+<b>INPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>taum1, tau, taup1&nbsp;&nbsp;&nbsp;</tt></td><td>   Time step index. <br>&nbsp;&nbsp;&nbsp;<span class="type">[integer]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>eta&nbsp;&nbsp;&nbsp;</tt></td><td>   surface height <br>&nbsp;&nbsp;&nbsp;<span class="type">[real, dimension(isd:,jsd:,:)]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>etataum1&nbsp;&nbsp;&nbsp;</tt></td><td>   surface height at time step taum1 </td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="obc_update_boundary"></a>
+<h4>obc_update_boundary</h4>
+<table cellspacing="0" CELLPADDING="2" BORDER="2"></table>
+<br>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   update field on the halo points at the global boundaries. </dd>
+<br>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>field&nbsp;&nbsp;&nbsp;</tt></td><td>   field to be update on the boundary <br>&nbsp;&nbsp;&nbsp;<span class="type">[real, dimension(:,:,:,:)]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_init"></a>
+<h4>ocean_obc_init</h4>
+<pre>  subroutine ocean_obc_init(have_obc, Time, Time_steps, Domain, Grid, debug)</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Allocates space and initializes a derived-type variable that 
+   contains domain decompostion and grid information. </dd>
+<br>
+<br>
+<dt>
+<b>INPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>dtts, dtuv, dtfs, dteta&nbsp;&nbsp;&nbsp;</tt></td><td>
+<br>&nbsp;&nbsp;&nbsp;<span class="type">[real]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>Domain&nbsp;&nbsp;&nbsp;</tt></td><td>   A derived data type that contains domain information for mom4. <br>&nbsp;&nbsp;&nbsp;<span class="type">[type(ocean_domain_type)]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>Grid&nbsp;&nbsp;&nbsp;</tt></td><td>   A derived data type that contains grid information for mom4. <br>&nbsp;&nbsp;&nbsp;<span class="type">[type(ocean_grid_type)]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>have_obc&nbsp;&nbsp;&nbsp;</tt></td><td>   logical variable to indicate if there is any open boundary condition. 
+   if true, open boudanry exists. <br>&nbsp;&nbsp;&nbsp;<span class="type">[logical]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_tracer_init"></a>
+<h4>ocean_obc_tracer_init</h4>
+<pre>  subroutine ocean_obc_tracer_init(Time, T_prog, num_prog_tracers, debug)</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Allocates space and initializes all stuff for tracers at OBC </dd>
+<br>
+<br>
+<dt>
+<b>INPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>debug&nbsp;&nbsp;&nbsp;</tt></td><td>
+<br>&nbsp;&nbsp;&nbsp;<span class="type">[logical]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_prepare"></a>
+<h4>ocean_obc_prepare</h4>
+<pre>  subroutine ocean_obc_prepare(Time, Ext_mode, T_prog)
+    type(ocean_time_type), intent(in)           :: Time 
+    type(ocean_external_mode_type),  intent(in) :: Ext_mode
+    type(ocean_prog_tracer_type), intent(inout) :: T_prog(:)
+
+    integer                                     :: m, n, i, j, taum1, tau
+    logical                                     :: used</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Prepares OBC  
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_adjust_advel"></a>
+<h4>ocean_obc_adjust_advel</h4>
+<pre>  subroutine ocean_obc_adjust_advel(Adv_vel)</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Subtract wrong vertical bottom velocity </dd>
+<br>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>Adv_vel&nbsp;&nbsp;&nbsp;</tt></td><td>   Advection velocities <br>&nbsp;&nbsp;&nbsp;<span class="type">[ocean_adv_vel_type]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_adjust_forcing_fs"></a>
+<h4>ocean_obc_adjust_forcing_fs</h4>
+<pre>  subroutine ocean_obc_adjust_forcing_fs(Ext_mode)</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Add wrong pressure gradient </dd>
+<br>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>Ext_mode&nbsp;&nbsp;&nbsp;</tt></td><td> 
+<br>&nbsp;&nbsp;&nbsp;<span class="type">[ocean_external_mode_type]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_tracer"></a>
+<h4>ocean_obc_tracer</h4>
+<pre>  subroutine ocean_obc_tracer(tracer, adv_vet, adv_vnt, wrk2, taum1, tau, taup1, time, name, n)</pre>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Extrapolate tracer on the open boundaries for ocean model and regional atmosphere model. </dd>
+<br>
+<br>
+<dt>
+<b>INPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>wrk2&nbsp;&nbsp;&nbsp;</tt></td><td>   contains rho0r/dht from update_tracer <br>&nbsp;&nbsp;&nbsp;<span class="type">[real, dimension(isc:,jsc:,:)]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>taum1, tau, taup1&nbsp;&nbsp;&nbsp;</tt></td><td>   time step index <br>&nbsp;&nbsp;&nbsp;<span class="type">[integer]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>time&nbsp;&nbsp;&nbsp;</tt></td><td>   model time <br>&nbsp;&nbsp;&nbsp;<span class="type">[type(time_type)]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>name&nbsp;&nbsp;&nbsp;</tt></td><td>   tracer name. <br>&nbsp;&nbsp;&nbsp;<span class="type">[character(len=*)]</span></td>
+</tr>
+<tr>
+<td valign="top" align="left"><tt>n&nbsp;&nbsp;&nbsp;</tt></td><td>   tracer number <br>&nbsp;&nbsp;&nbsp;<span class="type">[integer]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+<dt>
+<b>INPUT/OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>tracer&nbsp;&nbsp;&nbsp;</tt></td><td>   Tracer field <br>&nbsp;&nbsp;&nbsp;<span class="type">[real, dimension(isd:,jsd:,:,:)]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_obc_end"></a>
+<h4>ocean_obc_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Destructor routine. Release memory. </dd>
+<br>
+<br>
+<dt>
+<b>OUTPUT</b>
+</dt>
+<dd>
+<table border="0">
+<tr>
+<td valign="top" align="left"><tt>have_obc&nbsp;&nbsp;&nbsp;</tt></td><td>   Contains open boundary information <br>&nbsp;&nbsp;&nbsp;<span class="type">[logical]</span></td>
+</tr>
+</table>
+</dd>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_obc_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>nobc</tt>
+</dt>
+<dl>   number of open boundary condition. Its value should be less than max_obc. Increase max_obc if needed. <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>direction</tt>
+</dt>
+<dl>   open boundary direction. Each element value should be west, east, south or north. <br>
+<span class="type">[character(len=10), dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>is, ie, js, je</tt>
+</dt>
+<dl>   open boundary position. <br>
+<span class="type">[integer, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>name</tt>
+</dt>
+<dl>   type of open bounday. <br>
+<span class="type">[character(len=32), dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>obc_relax_eta</tt>
+</dt>
+<dl>   logical variable that decide whether relax eta or not. Default value is .false. <br>
+<span class="type">[logical, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>obc_consider_convu</tt>
+</dt>
+<dl>   logical variable that decide whether to account for one 
+   component of convu within the boundary. The appropriate behavior
+   depends on the model resolution.
+   Default value is .false. <br>
+<span class="type">[logical, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>obc_relax_eta_profile</tt>
+</dt>
+<dl>   logical variable that decide whether relax eta to a prscribed profile or not. 
+   Default value is .false. <br>
+<span class="type">[logical, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>obc_relax_tracer</tt>
+</dt>
+<dl>   logical variable that decide whether relax tracer or not. Default value is .false. <br>
+<span class="type">[logical, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>obc_tracer_orlanski</tt>
+</dt>
+<dl>   logical variable that decide whether apply orlanski obc on tracer or not. Default value is .false. <br>
+<span class="type">[logical, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt></tt>
+</dt>
+<dl>   Relaxation coefficient. <br>
+<span class="type">[real, dimension(max_obc)]</span>
+</dl>
+<dt>
+<tt>adjust_topog</tt>
+</dt>
+<dl>   Control adjusting topography on the open boundary. Default value is true. If true, no topographic 
+   gradient accross boundary. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>nt</tt>
+</dt>
+<dl>   number of tracers to use open boundary condition <br>
+<span class="type">[integer]</span>
+</dl>
+<dt>
+<tt>debug_phase_speed</tt>
+</dt>
+<dl>   Includes the phase speed into the model output. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>debug_obc</tt>
+</dt>
+<dl>   For debugging. <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

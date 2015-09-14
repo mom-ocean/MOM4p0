@@ -1,0 +1,591 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_tracer_advect_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_tracer_advect_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Matthew.Harrison@noaa.gov">   Matt Harrison </a>,&nbsp;
+    <a href="mailto:Ronald.Pacanowski@noaa.gov">   Ron Pacanowski </a>,&nbsp;
+    <a href="mailto:Stephen.Griffies@noaa.gov">   S. M. Griffies </a>,&nbsp;
+    <a href="mailto:John.Dunne@noaa.gov">   John Dunne </a>,&nbsp;
+    <a href="mailto:Alistair.Adcroft@noaa.gov">   Alistair Adcroft </a>,&nbsp;
+    <a href="mailto:Jennifer.Simeon@noaa.gov">   J. Simeon </a>
+<br>
+<b>Reviewers:&nbsp;</b>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_core">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   This module computes thickness weighted tracer advection tendencies. </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module computes thickness weighted tracer advection tendencies
+   using a variety of advection schemes. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>          fms_mod<br>  mpp_domains_mod<br>          mpp_mod<br> diag_manager_mod<br>ocean_domains_mod<br>    ocean_obc_mod<br>  ocean_topog_mod<br>  ocean_types_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#tracer_advection_init">tracer_advection_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#quicker_init">quicker_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#fourth_sixth_init">fourth_sixth_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#mdfl_init">mdfl_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer">horz_advect_tracer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer">vert_advect_tracer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_upwind">horz_advect_tracer_upwind</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_2nd_order">horz_advect_tracer_2nd_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_4th_order">horz_advect_tracer_4th_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_6th_order">horz_advect_tracer_6th_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_quicker">horz_advect_tracer_quicker</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#horz_advect_tracer_quickmom3">horz_advect_tracer_quickmom3</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_upwind">vert_advect_tracer_upwind</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_2nd_order">vert_advect_tracer_2nd_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_4th_order">vert_advect_tracer_4th_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_6th_order">vert_advect_tracer_6th_order</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_quicker">vert_advect_tracer_quicker</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#vert_advect_tracer_quickmom3">vert_advect_tracer_quickmom3</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#advect_tracer_mdfl_sub_b">advect_tracer_mdfl_sub_b</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#advect_tracer_mdfl_sweby">advect_tracer_mdfl_sweby</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#advect_tracer_sweby_all">advect_tracer_sweby_all</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="tracer_advection_init"></a>
+<h4>tracer_advection_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the tracer advection module. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="quicker_init"></a>
+<h4>quicker_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize quicker specific fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="fourth_sixth_init"></a>
+<h4>fourth_sixth_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize the fourth order and sixth order advection fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="mdfl_init"></a>
+<h4>mdfl_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize mdfl specific fields. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer"></a>
+<h4>horz_advect_tracer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer"></a>
+<h4>vert_advect_tracer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers.  Note that 
+   the mdfl-schemes are three-dimensional, with full 
+   advection tendency computed in horz_advect_tracer. 
+   So no need to do anything here if they are chosen.
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_upwind"></a>
+<h4>horz_advect_tracer_upwind</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from first order upwind.  
+   This scheme is positive definite but very diffusive. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_2nd_order"></a>
+<h4>horz_advect_tracer_2nd_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from
+   second order centered differences. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_4th_order"></a>
+<h4>horz_advect_tracer_4th_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from fourth order centered
+   differences. NOTE: this code does not account for non-uniform grids. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_6th_order"></a>
+<h4>horz_advect_tracer_6th_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from sixth order centered
+   differences. NOTE: this code does not account for non-uniform grids. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_quicker"></a>
+<h4>horz_advect_tracer_quicker</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from quicker. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="horz_advect_tracer_quickmom3"></a>
+<h4>horz_advect_tracer_quickmom3</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute horizontal advection of tracers from quicker using MOM3 masking. 
+   This method has proven useful for reproducing MOM3 results with MOM4. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_upwind"></a>
+<h4>vert_advect_tracer_upwind</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from first order upwind. 
+   This scheme is positive definite, but very diffusive. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_2nd_order"></a>
+<h4>vert_advect_tracer_2nd_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from second order centered
+   differences. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_4th_order"></a>
+<h4>vert_advect_tracer_4th_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from fourth order centered
+   differences. NOTE: this code does not account for non-uniform grids. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_6th_order"></a>
+<h4>vert_advect_tracer_6th_order</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from sixth order centered
+   differences. NOTE: this code does not account for non-uniform grids. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_quicker"></a>
+<h4>vert_advect_tracer_quicker</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from quicker. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="vert_advect_tracer_quickmom3"></a>
+<h4>vert_advect_tracer_quickmom3</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute vertical advection of tracers from quicker using MOM3 masking.
+   This method has proven useful for reproducing MOM3 results with MOM4. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="advect_tracer_mdfl_sub_b"></a>
+<h4>advect_tracer_mdfl_sub_b</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute tendency due to 3D advection of tracers using a multi-dimensional flux-limited
+   method.  This method differs from other methods in the following ways:
+   <br>
+<br>
+   1) Horizontal and vertical advection are combined
+   2) Calculations of the three coordinates (Z, X, Y) are performed sequentially as updates
+   to the tracer, so that the advection components for X and Y depend on Z and Z,Y
+   respectively... This helps limit the flux.
+   3) During the update for each direction, the 2nd order Super-B flux limiter is applied.
+   4) Flux divergence is included within the calculation to also help limit the flux:
+   - During the update for each direction, the divergence in each direction is added.
+   - During the overall tendency calculated, the divergence in all three directions 
+   is removed.
+   5) All fluxes are functions of the tracer field at the taum1 time step.  This 
+   means that this method is ideally suited for the twolevel time stepping scheme,
+   in which "taum1=tau", thus enabling twice the tracer time step available for the 
+   threelevel scheme. 
+   <br>
+<br>
+   The calculation proceeds as follows:
+   <br>
+<br>
+   IMPORTANT NOTE: If this scheme is used at all, it must be used as the option for BOTH
+   horizontal and vertical advection.  In the the tracer tendency, it is applied as the 
+   horizontal term, but applies to vertical as well, for which case the vertical term in
+   the tracer tendency equation is set to zero.
+   <br>
+<br>
+   This scheme was ported to mom4 from the MIT-GCM by John Dunne and Alistair Adcroft  
+   during Summer 2003 
+   <br>
+<br>
+   smg: 3/3/2004
+   need to generalize to thickness weighted algorithm.  Presently is in terms
+   of pure advection tendency.  Not clean, though may be workable.  
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="advect_tracer_mdfl_sweby"></a>
+<h4>advect_tracer_mdfl_sweby</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute tendency due to 3D advection of tracers using a multi-dimensional flux-limited
+   method.  This method differs from other methods in the following ways:
+   <br>
+<br>
+   1) Horizontal and vertical advection are combined
+   2) Calculations of the three coordinates (Z, X, Y) are performed sequentially as updates
+   to the tracer, so that the advection components for X and Y depend on Z and Z,Y
+   respectively... This helps limit the flux.
+   3) During the update for each direction, the 3rd order Sweby flux limiter is applied.
+   4) Flux divergence is included within the calculation to also help limit the flux:
+   - During the update for each direction, the divergence in each direction is added.
+   - During the overall tendency calculated, the divergence in all three directions
+   is removed.
+   5) All fluxes are functions of the tracer field at the taum1 time step.  This 
+   means that this method is ideally suited for the twolevel time stepping scheme,
+   in which "taum1=tau", thus enabling twice the tracer time step available for the 
+   threelevel scheme. 
+   <br>
+<br>
+   The calculation proceeds as follows:
+   <br>
+<br>
+   IMPORTANT NOTE: If this scheme is used at all, it must be used as the option for BOTH
+   horizontal and vertical advection.  In the the tracer tendency, it is applied as the 
+   horizontal term, but applies to vertical as well, for which case the vertical term in
+   the tracer tendency equation is set to zero.
+   <br>
+<br>
+   This scheme was ported to mom4 from the MIT-GCM by John Dunne and Alistair Adcroft  
+   during Summer 2003 
+   <br>
+<br>
+   Griffies: 5/27/04
+   Optimized by filling 3d arrays prior to sending for mpp_update_domains </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="advect_tracer_sweby_all"></a>
+<h4>advect_tracer_sweby_all</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Griffies: June 2004
+   <br>
+<br>
+   Sweby scheme optimized by doing all tracers at once, so 
+   can send larger packet to mpp_update_domains.
+   <br>
+<br>
+   This scheme is available ONLY when advecting all tracers with the 
+   sweby scheme (which is the common case at GFDL).
+   <br>
+<br>
+   This scheme has not been ported to the OBC, though such port 
+   is likely trivial to do.  
+   <br>
+<br> 
+</dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_tracer_advect_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>limit_with_upwind</tt>
+</dt>
+<dl>   If true, will compute tracer fluxes entering a cell using upwind 
+   if the tracer value is outside a specified range. Implemented
+   only for quick at this time. This is an ad hoc and incomplete attempt
+   to maintain monotonicity with the quicker scheme. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>debug_tracer_advect</tt>
+</dt>
+<dl>   For debugging <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+			 "/home/arl/lib/docbk/dtd/docbookx.dtd">
+
+<article lang="en">
+
+<articleinfo>
+   <title>MOM4 Quickstart Guide</title>
+
+   <abstract>
+   <para>
+     Brief instructions for running MOM4 experiments
+   </para>
+   </abstract>
+
+   <author>
+     <firstname>Giang</firstname>
+     <surname>Nong</surname>
+     <email>Giang.Nong@noaa.gov</email>
+   </author>
+</articleinfo>
+
+
+<section id="source code and scripts">
+   <title>Get the source code and scripts through CVS checkout or download</title>
+   <para>
+     After you do CVS checkout successfully a directory will be created. For
+     convenience, this directory will be referred to as the
+     <filename>ROOT</filename> directory. A readme file in the
+     <filename>ROOT</filename> directory will tell you the contents of each
+     subdirectory under <filename>ROOT</filename>.
+   </para>
+   <para>
+     In the sections below, <filename>test_case</filename> is a generic name
+     referring to the name of a specific experiment you are working on. Thus,
+     <filename>test_case</filename> in the path
+     <filename>ROOT/exp/test_case</filename> should be replaced by a concrete
+     name (for example <filename>test1</filename>, <filename>test2</filename>
+     , etc.) 
+   </para>   
+</section>
+
+
+<section id="Prepare preprocessing data">
+   <title>Prepare preprocessing data</title>
+   <para>
+     There are two ways of creating data for MOM4 experiments. The easy way is
+     to get data from NOMADS server. The hard (but more independent) way is to
+     create data from scratch.
+   </para>
+     <section id="Get data via NOMADS server">
+      <title>Get data via NOMADS server</title>
+      <para>
+       Users first need to create directory preprocessing for each test case:
+       <programlisting>
+         mkdir ROOT/exp/test_case/preprocessing
+       </programlisting>
+       The data files in NOMADS are organized in directories having the same
+       name as name of <filename>test_case</filename> (data for
+       <filename>test1</filename> are in directory <filename>test1</filename>,
+       etc.). Go to the experiment of your interest (see
+       "Brief description of MOM4 experiments" in the MOM4 manual) and start
+       downloading file <filename>preprocessing.tar</filename> to
+       <filename>ROOT/exp/test_case/preprocessing</filename>. You will need to
+       uncompress the file <filename>preprocessing.tar</filename> after
+       downloading. The command for uncompressing a .tar file is:
+       <programlisting>
+       tar -xvf filename.tar
+       </programlisting>
+      </para>
+      <para>  
+       Additional note for experiments test4 and test5:
+       In addition to all data from preprocessing directory described above
+       you will also need to:
+       <itemizedlist>
+        <listitem>
+         create a directory called <filename>data</filename> at the same level
+         as <filename>ROOT/exp/test_case</filename>.
+           <programlisting>
+             mkdir ROOT/exp/data
+             cd ROOT/exp/data
+           </programlisting>
+        </listitem> 
+        <listitem>
+         create 4 subdirectories inside  <filename>data</filename>:
+           <programlisting>
+             mkdir ice lad omip_mpi omip_ncar
+           </programlisting>
+        </listitem>
+        <listitem>
+          download data from the directory <filename>Data</filename> in NOMADS
+          to the corresponding subdirectory in <filename>data</filename>.
+        </listitem>
+      </itemizedlist>
+      Note that data in (<filename>ASCII, HISTORY, RESTART</filename>) are
+      <emphasis>NOT</emphasis> needed for running experiments. They are for the
+      purpose of comparing your results with results produced at GFDL.
+     </para>
+    </section>
+    <section id="Create data from scratch">
+      <title>Create data from scratch</title>
+      <para>
+        Tools are provided so that users can create data from scratch. For more
+        details refer to section "Setting up an experiment with MOM4"
+in the manual and the code in <filename>ROOT/src/preprocessing</filename>. 
+      </para>
+    </section>
+  </section>
+
+<section id="Compile the source code and execute the runscript">
+   <title>Compile the source code and execute the runscript</title>
+   <para>
+     MOM4 requires that NetCDF and MPI libraries be installed on users'
+     platform.
+   </para>
+   <para>
+     MOM4 code can be compiled and run with two memory allocation schemes:
+     <emphasis>DYNAMIC</emphasis> and <emphasis>STATIC</emphasis>. Almost all
+     compile scripts provided here are for the <emphasis>DYNAMIC</emphasis>
+     option. For the <emphasis>STATIC</emphasis> option see
+     <xref linkend="Brief description of MOM4 experiments"/> below.
+   </para>
+   <para>
+     Under <filename>ROOT/exp/test_case</filename> there is one script for both
+     compile and run. All scripts have the name beginning with
+     <filename>run_mom4</filename> followed by <filename>test_case</filename>
+     name (<filename>test1, test2,</filename> etc.). Before executing the
+     script make sure to change the platform to the platform of your computer
+     system. The platform is specified by:
+     <programlisting>
+       set platform = sgi # this is for sgi platform
+     </programlisting>
+   </para>
+   <para>
+     Users may also want to change the following before starting compilation
+     and execution:
+     <programlisting>
+       set npes = number of processors used in the run
+       set days = the length of the run in days
+       set months = the length of the run in months
+     </programlisting>
+     Those are the most basic settings for any run. Experienced users may go to
+     the namelist section in the runscript to set the values for namelist
+     variables. Details on namelists can be found in the corresponding Fortran
+     module. 
+   </para>
+</section>
+
+
+<section id="Examine the output">
+   <title>Examine the output</title>
+   <para>
+     To keep the runscript simple all output files of a model run will be in
+     the work directory. There are three types of output files:
+     <orderedlist>
+      <listitem>
+        ascii file with <filename>.fms.out</filename> extension: the
+        description of the setup of the run and verbose comments printed out
+        during the run.
+      </listitem>
+      <listitem>
+        restart files in <filename>RESTART</filename> directory: the model
+        fields necessary to initialize future runs of the model.
+      </listitem>
+      <listitem>
+        history files with <filename>.nc.tar</filename> extension: output of
+        the model, both averaged over specified time intervals and snapshots.
+      </listitem>
+     </orderedlist>
+   </para>
+   <para>
+     The ascii file contains everything written to the screen during model
+     execution. The total time for model execution as well as the times of
+     separate modules are reported here. All <filename>.tar</filename> files
+     should be decompressed for viewing. The decompress command is:
+     <programlisting>
+       tar -xvf filename.tar
+     </programlisting>
+   </para>
+   <para>
+     Users will see result files in NetCDF format. Postprocessing tools such
+     as Ferret, ncview, grads or matlab can be used to view data in these
+     files. 
+   </para>
+</section>
+
+<section id="Brief description of MOM4 experiments">
+   <title>Brief description of MOM4 experiments</title>
+   <para>
+     MOM4 is distributed with a set of test cases. These tests are taken from
+     models used at GFDL for testing the numerical and computational integrity
+     of the code.
+     <warning>
+       These experiments are <emphasis>NOT</emphasis> sanctioned for their
+       physical relevance. They are instead provided for the user to learn how
+       to run mom4, and to verify the numerical and/or computational integrity
+       of the code. <emphasis>PLEASE</emphasis> do not assume that the
+       experiments will run for more than the short time selected in the
+       sample run scripts.
+     </warning>
+   </para>
+   <para>
+     <simplelist>
+       <member>
+         <filename>mom4_test1</filename>: flat bottom sector model with simple
+         physics. This model is very small and can be easily run on a single
+         workstation. It should provide the user with a basic experience of
+         running mom4.
+       </member>
+       <member>
+         <filename>mom4_test2</filename>: flat bottom sector model which more
+         fully tests some realistic physics options. This experiment has the
+         same grid as test1, but it more thoroughly exercises the various
+         physics packages.
+       </member>
+       <member>
+         <filename>mom4_test3A</filename>: east-west channel with open boundary
+         at west. This experiment is an illustration of the open boundary
+         condition capability of mom4. Tracers include potential temperature
+         and salinity.
+       </member>
+       <member>
+         <filename>mom4_test3B</filename>: solid wall of twice domain size as
+         test3A for testing OBC. This experiment is used to verify the
+         relevance of the test3A solution at early times. That is, for early
+         times, the solution from test3A should agree with that from test3B.
+         Tracers include potential temperature and salinity.
+       </member>
+       <member>
+         <filename>mom4_test4</filename>: global tripolar grid using roughly
+         3x3 resolution with 28 vertical levels and age, biotic, and cfc tracer
+         packages. Coupled to GFDL sea ice model.
+       </member>
+       <member>
+         <filename>mom4_test5</filename>: global tripolar grid using roughly
+         "1-degree" resolution ocean with 50 vertical levels coupled to the
+         GFDL sea ice model and forced with the German OMIP dataset. Tracers
+         include potential temperature, salinity, and age.
+       </member>
+    <member>	
+  <filename>mom4_iom</filename>: This is Indian Ocean Community Model
+   version 1.0 developed for Intensive Course on Ocean Modeling held
+   at CMMACS, India, October 4-14, 2004.
+   </member>
+     </simplelist>
+    </para>
+    <para>
+      Experiments are based on mom4p0 branch. For increased efficiency,
+      the <option>-DSTATIC_MEMORY</option> compile option allows mom4 on the
+      SGI to run about twice the speed as dynamic memory
+allocation. On other platforms, however, the performance of static
+option may vary substantially. Notably,
+      the static option requires each processor to have identical sized
+      domains, and for these domains to be specified at compile time. Hence, a
+      bit of algebra is required prior to compiling the experiment.
+      Specifically, <option>layout</option> in <option>ocean_model_nml</option>
+      namelist should be correctly set. Example of runscript for
+static option is provided for just one test case (test1_static) but users
+      can build compile and run scripts for other test cases based on this
+      example. 
+    </para>
+</section>
+
+</article>

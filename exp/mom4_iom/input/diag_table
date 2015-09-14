@@ -1,0 +1,34 @@
+"indian ocean exp"
+1 1 1 0 0 0
+#output files
+"ocean_day", 2,  "days", 1, "days", "Time"
+
+#output variables
+# OCEAN DIAGNOSTICS
+#==================
+#
+# Prognostic fields:
+#==================
+#
+"ocean_model","eta_t","eta_t","ocean_day","all",.true.,"none",2
+"ocean_model","eta_u","eta_u","ocean_day","all",.true.,"none",2
+"ocean_model","temp","temp","ocean_day","all",.true.,"none",4
+"ocean_model","salt","salt","ocean_day","all",.true.,"none",4
+"ocean_model","u","u","ocean_day","all",.true.,"none",4
+"ocean_model","v","v","ocean_day","all",.true.,"none",4
+"ocean_model","ud","ud","ocean_day","all",.true.,"none",2
+"ocean_model","vd","vd","ocean_day","all",.true.,"none",2
+#
+# Diagnostic fields:
+#==================
+#
+"ocean_model","wt","wt","ocean_day","all",.true.,"none",2
+"ocean_model","mld","mld","ocean_day","all",.true.,"none",2
+#
+# Surface flux quantities:
+#========================
+#
+"ocean_model","sfc_hflux","sfc_hflux","ocean_day","all",.true.,"none",2
+"ocean_model","pme","pme","ocean_day","all",.true.,"none",2
+"ocean_model","tau_x","tau_x","ocean_day","all",.true.,"none",2
+"ocean_model","tau_y","tau_y","ocean_day","all",.true.,"none",2

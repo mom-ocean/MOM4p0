@@ -1,0 +1,487 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+			 "/home/arl/lib/docbk/dtd/docbookx.dtd">
+
+<article lang="en">
+
+<articleinfo>
+   <title>MOM4beta3 Emails Categorized by Subject</title>
+
+   <abstract>
+   <para>
+     The mom4beta3 <ulink url="https://fms.gfdl.noaa.gov/account/login.php?return_to=%2Fmail%2F%3Fgroup_id%3D5">email archive</ulink> on GForge is organized by
+     date and thread. This web page organizes the emails by subject. With the
+     public release of MOM4p0 on January 6 2004 this page is closed for new
+     emails. All new emails should be sent to the mom4p0 mailing list.
+   </para>
+   </abstract>
+
+   <author>
+     <firstname>Giang</firstname>
+     <surname>Nong</surname>
+     <email>Giang.Nong@noaa.gov</email>
+   </author>
+</articleinfo>
+
+
+<section id="announcements/code updates">
+   <title>Announcements/code updates</title>
+   
+   <programlisting>
+      Stephen Griffies
+      Wed, 01 Oct 2003 17:55:53 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00002"/>
+   </programlisting>
+ 
+   <programlisting>
+     Zhi Liang
+     Fri, 3 Oct 2003 08:43:26 -0400 (EDT) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00007"/>
+   </programlisting>
+
+   <programlisting>
+     Zhi Liang
+     Fri, 3 Oct 2003 15:41:54 -0400 (EDT) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00013"/>
+   </programlisting>
+
+   <programlisting>
+     Zhi Liang
+     Thu, 9 Oct 2003 11:07:05 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00040"/>
+   </programlisting>
+   
+   <programlisting>
+     Zhi Liang
+     Thu, 9 Oct 2003 11:07:05 -0400
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00040"/>
+   </programlisting>
+
+   <programlisting>
+     Zhi Liang
+     Thu, 9 Oct 2003 11:17:25 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00041"/>
+   </programlisting>
+
+   <programlisting>
+     Stephen Griffies
+     Sun, 02 Nov 2003 18:14:48 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00119"/>
+   </programlisting>
+
+   <programlisting>
+     Stephen Griffies
+     Fri, 21 Nov 2003 09:47:11 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00128"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="MOM4 algorithm issues">
+   <title>MOM4 algorithm issues</title>
+
+   <programlisting>
+     Russell Fiedler
+     Thu, 9 Oct 2003 15:26:59 +1100 (EST)
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00031"/>
+   </programlisting> 
+
+   <programlisting>
+     Martin Schmidt
+     Thu, 9 Oct 2003 11:45:30 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00032"/>
+   </programlisting> 
+
+   <programlisting>
+     Martin Schmidt
+     Thu, 23 Oct 2003 10:37:47 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00087"/>
+   </programlisting> 
+
+   <programlisting>
+     Martin Schmidt
+     Mon, 27 Oct 2003 12:53:16 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00106"/>
+   </programlisting> 
+
+   <programlisting>
+     Stephen Griffies
+     Sun, 02 Nov 2003 18:06:51 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00118 "/>
+   </programlisting> 
+
+   <programlisting>
+     Martin Schmidt
+     Mon, 3 Nov 2003 13:12:27 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00120"/>
+   </programlisting> 
+
+   <programlisting>
+     Martin Schmidt
+     Fri, 7 Nov 2003 19:03:29 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00121"/>
+   </programlisting> 
+
+</section>
+
+
+<section id="Scripts">
+   <title>Scripts</title>
+
+   <programlisting>
+     Martin Schmidt
+     Mon, 13 Oct 2003 11:11:58 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00048"/>
+   </programlisting>
+
+   <programlisting>
+     Martin Schmidt
+     Mon, 27 Oct 2003 08:39:07 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00105
+"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="Shared code">
+   <title>Shared code</title>
+
+   <programlisting>
+     Martin Schmidt
+     Thu, 9 Oct 2003 11:45:30 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00032"/>
+   </programlisting>
+
+   <programlisting>
+      Russell Fiedler
+      Fri, 24 Oct 2003 15:07:48 +1100 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00096"/>
+   </programlisting>
+
+   <programlisting>
+      Eric Dolven
+      Tue, 2 Dec 2003 13:45:09 -0800 (PST)
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00137"/>
+   </programlisting>
+
+   <programlisting>
+      Nick Tausnev
+      Mon, 8 Dec 2003 16:37:07 -0500 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00140"/>
+   </programlisting>
+
+   <programlisting>
+      Balaji
+      Mon, 8 Dec 2003 17:55:16 -0500 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00141"/>
+   </programlisting>
+
+   <programlisting>
+      Shep Smithline
+      Tue, 09 Dec 2003 10:37:16 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00144"/>
+   </programlisting>
+
+   <programlisting>
+      Shep Smithline
+      Wed, 10 Dec 2003 10:12:53 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00149"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Tue, 9 Dec 2003 12:44:13 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00145"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Tue, 9 Dec 2003 13:15:29 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00146"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="Fortran 90 issues">
+   <title>Fortran 90 issues</title>
+
+   <programlisting>
+      Martin Schmidt
+      Tue, 28 Oct 2003 10:02:17 +0100  
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00109"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Tue, 28 Oct 2003 08:20:26 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00110"/>
+   </programlisting>
+
+   <programlisting>
+      Eric Dolven
+      Tue, 9 Dec 2003 17:04:24 -0800 (PST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00147"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="Code/data distribution">
+   <title>Code/data distribution</title>
+
+   <programlisting>
+      Rene Redler
+      Thu, 2 Oct 2003 14:48:20 +0200 (CEST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00003"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Thu, 9 Oct 2003 16:17:22 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00038"/>
+   </programlisting>
+
+</section>
+
+
+<section id="IBM">
+   <title>IBM</title>
+
+   <programlisting>
+      Martin Schmidt
+      Thu, 2 Oct 2003 20:57:52 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00004"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Sat, 4 Oct 2003 22:23:24 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00017"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Mon, 6 Oct 2003 15:34:16 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00020"/>
+   </programlisting>
+
+   <programlisting>
+      Richard D. Slater
+      Mon, 06 Oct 2003 14:24:28 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00022"/>
+   </programlisting>
+
+   <programlisting>
+      rene.redler
+      Tue, 7 Oct 2003 09:16:41 +0200 (CEST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00023"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Wed, 8 Oct 2003 11:46:24 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00028"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Thu, 9 Oct 2003 11:45:30 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00032"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Thu, 9 Oct 2003 13:48:00 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00035"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Wed, 15 Oct 2003 15:38:19 +0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00053"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Fri, 24 Oct 2003 14:29:02 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00103"/>
+   </programlisting>
+
+   <programlisting>
+      Martin Schmidt
+      Thu, 12 Nov 2003 09:21:11 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00123"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Wed, 12 Nov 2003 08:11:21 -0500 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00124"/>
+   </programlisting>
+
+   <programlisting>
+      Jeffrey Durachta
+      Wed, 12 Nov 2003 10:21:32 -0500 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00126"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="CRAY">
+   <title>CRAY</title>
+
+   <programlisting>
+      Luiz Paulo
+      Thu, 23 Oct 2003 19:19:52 -0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00093"/>
+   </programlisting>
+
+   <programlisting>
+      Harper Simmons
+      Thu, 23 Oct 2003 13:33:19 -0800 (AKDT) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00094"/>
+   </programlisting>
+
+   <programlisting>
+      Brent Swartz
+      Fri, 07 Nov 2003 17:05:40 -0600 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00122"/>
+   </programlisting>
+
+   <programlisting>
+      Luiz Paulo
+      Mon, 01 Dec 2003 11:48:03 -0200 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00134"/>
+   </programlisting>
+
+   <programlisting>
+      Luiz Paulo
+      Thu, 04 Dec 2003 15:59:23 -0200
+      <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00138"/>
+   </programlisting>
+
+   <programlisting>
+      Eric Dolven
+      Tue, 16 Dec 2003 17:47:42 -0800 (PST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00159"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="IFC">
+   <title>IFC</title>
+
+   <programlisting>
+      William Cooke
+      Mon, 20 Oct 2003 13:50:32 -0400 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00074"/>
+   </programlisting>
+
+   <programlisting>
+      Goran Georgievski
+      Thu, 27 Nov 2003 14:31:18 +0000 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00130"/>
+   </programlisting>
+
+   <programlisting>
+      Goran Georgievski
+      Fri, 28 Nov 2003 13:33:34 +0000 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00132"/>
+   </programlisting>
+
+   <programlisting>
+      William Cooke
+      Mon, 1 Dec 2003 13:13:08 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00135"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="SGI">
+   <title>SGI</title>
+
+   <programlisting>
+      Swathi
+      16 Oct 2003 10:59:48 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00058"/>
+   </programlisting>
+
+   <programlisting>
+      John Levesque
+      Mon, 27 Oct 2003 18:32:17 -0600 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00108"/>
+   </programlisting>
+
+   <programlisting>
+      Giang Nong
+      Tue, 28 Oct 2003 09:05:32 -0500 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00111"/>
+   </programlisting>
+
+</section>
+
+
+
+<section id="NEC">
+   <title>NEC</title>
+
+   <programlisting>
+      Rene Redler
+      Mon, 6 Oct 2003 14:24:43 +0200 (CEST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00018"/>
+   </programlisting>
+
+   <programlisting>
+      Rene Redler
+      Tue, 7 Oct 2003 13:17:24 +0200 (CEST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00024"/>
+   </programlisting>
+
+   <programlisting>
+      Rene Redler
+      Tue, 7 Oct 2003 13:23:16 +0200 (CEST)
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00025"/>
+   </programlisting>
+
+   <programlisting>
+      Rene Redler
+      Fri, 21 Nov 2003 11:50:17 +0100 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00127"/>
+   </programlisting>
+
+   <programlisting>
+      Russell Fiedler
+      Mon, 1 Dec 2003 15:57:10 +1100 (EST) 
+     <ulink url="https://fms.gfdl.noaa.gov/mail/majordomo/archive.php?group_id=5&amp;list_id=5&amp;message_id=00133"/>
+   </programlisting>
+
+</section>
+
+
+<para>
+For questions about this web page, please contact
+<email>Giang.Nong@noaa.gov</email>. Click <ulink url="https://fms.gfdl.noaa.gov/account/login.php?return_to=%2Fmail%2F%3Fgroup_id%3D5">here</ulink> for the
+MOM4 email archive.
+</para>
+
+<note>
+You must be logged into
+<ulink url="https://fms.gfdl.noaa.gov/account/login.php">GForge</ulink> and be
+a registered MOM4 user to access any message or archive links.
+</note>
+
+</article>

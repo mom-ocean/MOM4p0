@@ -1,0 +1,456 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocean_velocity_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocean_velocity_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Ronald.Pacanowski@noaa.gov">   R.C. Pacanowski </a>,&nbsp;
+    <a href="mailto:Tony.Rosati@noaa.gov">   A. Rosati </a>
+<br>
+<b>Reviewers:&nbsp;</b><a href="mailto:Matthew.Harrison@noaa.gov">   M.J. Harrison </a>,&nbsp;
+    <a href="mailto:Stephen.Griffies@noaa.gov">   S.M. Griffies </a>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_core">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Time step velocity </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   This module steps the velocity field forward in time using a 
+   leap-frog time stepping scheme. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>            constants_mod<br>         diag_manager_mod<br>                  fms_mod<br>               fms_io_mod<br>          mpp_domains_mod<br>                  mpp_mod<br>   ocean_bih_friction_mod<br>       ocean_coriolis_mod<br>        ocean_domains_mod<br>   ocean_lap_friction_mod<br>            ocean_obc_mod<br>      ocean_operators_mod<br>       ocean_pressure_mod<br>          ocean_types_mod<br>           ocean_util_mod<br>ocean_velocity_advect_mod<br>  ocean_velocity_diag_mod<br>       ocean_vert_mix_mod<br>      ocean_workspace_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#ocean_velocity_init">ocean_velocity_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#check_gravity_wave_cfl">check_gravity_wave_cfl</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_explicit_accel_a">ocean_explicit_accel_a</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_explicit_accel_b">ocean_explicit_accel_b</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#update_ocean_velocity">update_ocean_velocity</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_implicit_friction">ocean_implicit_friction</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_implicit_coriolis">ocean_implicit_coriolis</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_velocity_end">ocean_velocity_end</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#energy_analysis">energy_analysis</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocean_velocity_chksum">ocean_velocity_chksum</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="ocean_velocity_init"></a>
+<h4>ocean_velocity_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize terms for the velocity equation. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="check_gravity_wave_cfl"></a>
+<h4>check_gravity_wave_cfl</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Check CFL for internal gravity waves. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_explicit_accel_a"></a>
+<h4>ocean_explicit_accel_a</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Time explicit contributions to thickness weighted acceleration. 
+   Omit here the Coriolis force and verrtical friction here. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_explicit_accel_b"></a>
+<h4>ocean_explicit_accel_b</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Add Coriolis force and explicit vertical friction to explicit-time
+   thickness weighted acceleration. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="update_ocean_velocity"></a>
+<h4>update_ocean_velocity</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Update velocity components </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_implicit_friction"></a>
+<h4>ocean_implicit_friction</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Contributions to thickness weighted acceleration from implicit
+   vertical friction. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_implicit_coriolis"></a>
+<h4>ocean_implicit_coriolis</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Contributions to acceleration from time-implicit Coriolis force. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_velocity_end"></a>
+<h4>ocean_velocity_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Write the velocity field to a restart </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="energy_analysis"></a>
+<h4>energy_analysis</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Perform energy analysis by taking scalar product of horizontal
+   velocity with the velocity equations and integrating over the ocean volume. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocean_velocity_chksum"></a>
+<h4>ocean_velocity_chksum</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Compute checksum for velocity components </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<hr>
+<h4>NAMELIST</h4>
+<div>
+<b>&amp;ocean_velocity_nml</b>
+<br>
+<br>
+<div>
+<dl>
+<dt>
+<tt>zero_tendency</tt>
+</dt>
+<dl>   For debugging. Will freeze the baroclinic velocity  fields. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>zero_tendency_explicit</tt>
+</dt>
+<dl>   For debugging. Will not use explicit part of the tendency. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>zero_tendency_implicit</tt>
+</dt>
+<dl>   For debugging. Will not use implicit part of the tendency. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>truncate_velocity</tt>
+</dt>
+<dl>   Truncate the velocity to a maximum value.  Useful for cases where
+   the initial spin-up initiates spuriously large model velocities that would
+   otherwise cause the model to blow-up. <br>
+<span class="type">[logical]</span>
+</dl>
+<dt>
+<tt>vel_max</tt>
+</dt>
+<dl>   Truncation velocity <br>
+<span class="type">[real, units: meter/sec]</span>
+</dl>
+<dt>
+<tt>max_cgint</tt>
+</dt>
+<dl>   Maximum internal gravity wave speed--used for diagnosing conservative
+   estimate of stable time steps. <br>
+<span class="type">[real]</span>
+</dl>
+<dt>
+<tt>adams_bashforth_epsilon</tt>
+</dt>
+<dl>   Dimensionless parameter for 2nd order Adams-Bashforth implementation of 
+   velocity advection.  Values between 0.5 and 1.0 are recommended.  
+   Value of 0.5 leads to second order accurate, but it is formally 
+   weakly unstable (Durran, Section 2.3.4). <br>
+<span class="type">[real, units: dimensionless]</span>
+</dl>
+<dt>
+<tt>adams_bashforth_third</tt>
+</dt>
+<dl>   For a third order treatment of the velocity advection.  
+   This is stable and so needs no temporal dissipation 
+   (Section 2.3.6 of Durran).  This is the model default. <br>
+<span class="type">[logicall]</span>
+</dl>
+<dt>
+<tt>truncate_verbose</tt>
+</dt>
+<dl>   For verbose printout <br>
+<span class="type">[logical]</span>
+</dl>
+</dl>
+</div>
+</div>
+<br>
+<!-- END NAMELIST -->
+<a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<a name="REFERENCES"></a>
+<hr>
+<h4>REFERENCES</h4>
+<!-- BEGIN REFERENCES -->
+<div>
+<ol>
+<li>   Durran, Numerical Methods for Wave Equations in Geophysical
+   Fluid Dynamics (1999). </li>
+<li>   R.C. Pacanowski and S.M. Griffies, The MOM3 Manual (1999).
+   NOAA/Geophysical Fluid Dynamics Laboratory </li>
+<li>   S.M. Griffies, M.J. Harrison, R.C. Pacanowski, and 
+   A. Rosati, A Technical Guide to MOM4 (2004).
+   NOAA/Geophysical Fluid Dynamics Laboratory </li>
+<li>   S.M. Griffies, Fundamentals of Ocean Climate Models (2004).
+   Princeton University Press. </li>
+<li>   S.M. Griffies, R.C. Pacanowski, R.M. Schmidt, and V. Balaji
+   Tracer Conservation with an Explicit Free Surface Method for 
+   Z-coordinate Ocean Models
+   Monthly Weather Review (2001) vol 129 pages 1081--1098 </li>
+</ol>
+</div>
+<br>
+<!-- END REFERENCES -->
+<a name="COMPILER SPECIFICS"></a>
+<hr>
+<h4>COMPILER SPECIFICS</h4>
+<!-- BEGIN COMPILER SPECIFICS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END COMPILER SPECIFICS -->
+<a name="PRECOMPILER OPTIONS"></a>
+<hr>
+<h4>PRECOMPILER OPTIONS</h4>
+<!-- BEGIN PRECOMPILER OPTIONS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END PRECOMPILER OPTIONS -->
+<a name="LOADER OPTIONS"></a>
+<hr>
+<h4>LOADER OPTIONS</h4>
+<!-- BEGIN LOADER -->
+<div>None.<br>
+<br>
+</div>
+<!-- END LOADER OPTIONS -->
+<a name="TEST PROGRAM"></a>
+<hr>
+<h4>TEST PROGRAM</h4>
+<!-- BEGIN TEST PROGRAM -->
+<div>None.<br>
+</div>
+<br>
+<!-- END TEST PROGRAM -->
+<a name="KNOWN BUGS"></a>
+<hr>
+<h4>KNOWN BUGS</h4>
+<!-- BEGIN KNOWN BUGS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END KNOWN BUGS -->
+<a name="NOTES"></a>
+<hr>
+<h4>NOTES</h4>
+<!-- BEGIN NOTES -->
+<div>None.<br>
+</div>
+<br>
+<!-- END NOTES -->
+<a name="FUTURE PLANS"></a>
+<hr>
+<h4>FUTURE PLANS</h4>
+<!-- BEGIN FUTURE PLANS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END FUTURE PLANS -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+
+"tracer_packages","ocean_mod","ocmip2_biotic"
+
+names = _
+horizontal-advection-scheme = mdfl_sweby
+vertical-advection-scheme = mdfl_sweby
+min_tracer_limit=0.0
+/
+
+"namelists","ocean_mod","ocmip2_biotic/*global*"
+
+po4_star_file = INPUT/ocmip2_po4_monthly_om1p5_bc.nc
+po4_star_name = po4
+atmpress_file = INPUT/ocmip2_press_monthly_om1p5_bc.nc
+atmpress_name = p
+pistonveloc_file = INPUT/ocmip2_xkw_monthly_om1p5_bc.nc
+pistonveloc_name = xkw
+seaicefract_file = INPUT/ocmip2_fice_monthly_om1p5_bc.nc
+seaicefract_name = fice
+/

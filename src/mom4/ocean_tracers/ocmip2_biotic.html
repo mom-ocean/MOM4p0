@@ -1,0 +1,644 @@
+<!--
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!                                                                   !!
+!!                   GNU General Public License                      !!
+!!                                                                   !!
+!! This file is part of the Flexible Modeling System (FMS).          !!
+!!                                                                   !!
+!! FMS is free software; you can redistribute it and/or modify       !!
+!! it and are expected to follow the terms of the GNU General Public !!
+!! License as published by the Free Software Foundation.             !!
+!!                                                                   !!
+!! FMS is distributed in the hope that it will be useful,            !!
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of    !!
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the     !!
+!! GNU General Public License for more details.                      !!
+!!                                                                   !!
+!! You should have received a copy of the GNU General Public License !!
+!! along with FMS; if not, write to:                                 !!
+!!          Free Software Foundation, Inc.                           !!
+!!          59 Temple Place, Suite 330                               !!
+!!          Boston, MA  02111-1307  USA                              !!
+!! or see:                                                           !!
+!!          http://www.gnu.org/licenses/gpl.txt                      !!
+!!                                                                   !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+-->
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>Module ocmip2_biotic_mod</title>
+<link type="text/css" href="http://www.gfdl.noaa.gov/~fms/style/doc.css" rel="stylesheet">
+<STYLE TYPE="text/css">
+          .fixed {
+            font-size:medium;
+            font-family:monospace;
+            border-style:none;
+            border-width:0.1em;
+            padding:0.1em;
+            color:#663366;
+          }
+        </STYLE>
+</head>
+<body>
+<a name="TOP"></a><font class="header" size="1"><a href="#PUBLIC INTERFACE">PUBLIC INTERFACE </a>~
+          <a href="#PUBLIC DATA">PUBLIC DATA </a>~
+          <a href="#PUBLIC ROUTINES">PUBLIC ROUTINES </a>~
+          <a href="#NAMELIST">NAMELIST </a>~
+          <a href="#DIAGNOSTIC FIELDS">DIAGNOSTIC FIELDS </a>~
+          <a href="#ERROR MESSAGES">ERROR MESSAGES </a>~
+          <a href="#REFERENCES">REFERENCES </a>~ 
+          <a href="#NOTES">NOTES</a></font>
+<hr>
+<h2>Module ocmip2_biotic_mod</h2>
+<a name="HEADER"></a>
+<!-- BEGIN HEADER -->
+<div>
+<b>Contact:&nbsp;</b><a href="mailto:Richard.Slater@noaa.gov">   Richard D. Slater </a>
+<br>
+<b>Reviewers:&nbsp;</b><a href="mailto:John.Dunne@noaa.gov">   John P. Dunne </a>
+<br>
+<b>Change History:&nbsp;</b><a href="http://www.gfdl.noaa.gov/fms-cgi-bin/cvsweb.cgi/FMS/ocean/mom4/ocean_tracers">WebCVS Log</a>
+<br>
+<br>
+</div>
+<!-- END HEADER -->
+<a name="OVERVIEW"></a>
+<hr>
+<h4>OVERVIEW</h4>
+<!-- BEGIN OVERVIEW -->
+<p class="text">   Ocean Carbon Model Intercomparison Study II: Biotic module </p>
+<!-- END OVERVIEW -->
+<a name="DESCRIPTION"></a>
+<!-- BEGIN DESCRIPTION -->
+<div>   Implementation of routines to solve the OCMIP-2 Biotic
+   simulations as outlined in the Biotic-HOWTO documentation,
+   revision 1.7, 1999/10/05. </div>
+<br>
+<!-- END DESCRIPTION -->
+<a name="OTHER MODULES USED"></a>
+<hr>
+<h4>OTHER MODULES USED</h4>
+<!-- BEGIN OTHER MODULES USED -->
+<div>
+<pre>        diag_manager_mod<br>       field_manager_mod<br>                 fms_mod<br>                 mpp_mod<br>        time_manager_mod<br>time_interp_external_mod<br>      ocean_tpm_util_mod<br>           ocean_sbc_mod<br>         ocean_types_mod<br>      ocmip2_co2calc_mod<br>              mpp_io_mod</pre>
+</div>
+<!-- END OTHER MODULES USED -->
+<!-- BEGIN PUBLIC INTERFACE -->
+<a name="PUBLIC INTERFACE"></a>
+<hr>
+<h4>PUBLIC INTERFACE</h4>
+<div>
+<dl>
+<dt>
+<a href="#allocate_arrays">allocate_arrays</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#bc_interp">bc_interp</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#locate">locate</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_bbc">ocmip2_biotic_bbc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_end">ocmip2_biotic_end</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_sbc">ocmip2_biotic_sbc</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_init">ocmip2_biotic_init</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_source">ocmip2_biotic_source</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_start">ocmip2_biotic_start</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#ocmip2_biotic_tracer">ocmip2_biotic_tracer</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#read_c14atm">read_c14atm</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#read_co2atm">read_co2atm</a>:</dt>
+<dd></dd>
+<dt>
+<a href="#set_array">set_array</a>:</dt>
+<dd></dd>
+</dl>
+</div>
+<br>
+<!-- END PUBLIC INTERFACE -->
+<a name="PUBLIC DATA"></a>
+<hr>
+<h4>PUBLIC DATA</h4>
+<!-- BEGIN PUBLIC DATA -->
+<div>None.<br>
+<br>
+</div>
+<!-- END PUBLIC DATA -->
+<a name="PUBLIC ROUTINES"></a>
+<hr>
+<h4>PUBLIC ROUTINES</h4>
+<!-- BEGIN PUBLIC ROUTINES -->
+<ol type="a">
+<li>
+<a name="allocate_arrays"></a>
+<h4>allocate_arrays</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Dynamically allocate arrays </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="bc_interp"></a>
+<h4>bc_interp</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Interpolates atmospheric CO2 and C-14 to the timestep of the model
+   <br>
+<br>
+   ARGUMENT LIST -
+   <br>
+<br>
+   Note: Variable type is given in square brackets (below)
+   (r-real, i-integer, l-logical, c-character; s-scaler, a-array).
+   <br>
+<br>
+   INPUT:
+   <br>
+<br>
+   [rs] - year_model = decimal year of model (e.g., 1990.67), as
+   computed from the timestep and the year of
+   the initialization of the simulation. This
+   information is necessary to interpolate
+   atmospheric levels of CO2 (atmco2_t) and 
+   C-14 (atmc14_t) from the historical records 
+   chosen for OCMIP-2 (from Enting et al. (1994).
+   <br>
+<br>
+   [cs] - futr_scen  = Either 'S450' or 'S650' (in upper CASE) 
+   Choses from the IPCC future scenarios by the 
+   same names.  These scenarios are standard for
+   OCMIP-2 future runs.  The choice of "futr_scen"
+   does NOT affect "atmc14_t". Likewise, it does
+   NOT affect "atmco2_t" prior to 1990.5.
+   <br>
+<br>
+   OUTPUT: 
+   <br>
+<br>
+   [rs] - atmco2_t   =  Atmospheric CO2 (ppm) at "year_model"
+   <br>
+<br>
+   [ra] - atmc14_t   =  3-member array of atmospheric C-14 at
+   year_model".  Sequentially, the 3 values
+   correspond to forcing in 3 latitudinal bands:
+   (1) 90S - 20S,
+   (2) 20S - 20N, and
+   (3) 20N - 90N.
+   <br>
+<br>
+   James Orr, LSCE/CEA-CNRS, Saclay, France, 20 April 1999 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="locate"></a>
+<h4>locate</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   After Numerical recipes:
+   <br>
+<br>
+   Given an array XX of length N, and a given value of X, returns a
+   value of J such that X is between XX(J) and XX(J+1).  XX must be
+   monotonic, either increasing or decreasing. J=0 or J=N is
+   returned to indicate that X is out of range.      
+   New features:
+   <br>
+<br>
+   If "period" is specified, then the array, xx, is considered
+   to be periodic with a period of "period". If "x_in" is out
+   of range, then add or subtract "period" once to attempt to 
+   make "x_in" be in range.
+   <br>
+<br>
+   If "nearest" is specified, and true, then return "j" such
+   that it is the element of "xx" which is nearest to the value
+   of "x_in" (where "x_in" may have been modified by the value
+   "period", above). With this option, "j" will be in
+   the range 1 &lt;= j &lt;= n. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_bbc"></a>
+<h4>ocmip2_biotic_bbc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   calculate the surface boundary conditions </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_end"></a>
+<h4>ocmip2_biotic_end</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Clean up various BIOTIC quantities for this run. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_sbc"></a>
+<h4>ocmip2_biotic_sbc</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Calculate the surface boundary conditions </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_init"></a>
+<h4>ocmip2_biotic_init</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Set up any extra fields needed by the tracer packages
+   <br>
+<br>
+   Save pointers to various "types", such as Grid and Domains. </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_source"></a>
+<h4>ocmip2_biotic_source</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   compute the source terms for the BIOTICs, including boundary
+   conditions (not done in setvbc, to minimize number
+   of hooks required in MOM base code) </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_start"></a>
+<h4>ocmip2_biotic_start</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Initialize variables, read in namelists, calculate constants
+   for a given run and allocate diagnostic arrays </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="ocmip2_biotic_tracer"></a>
+<h4>ocmip2_biotic_tracer</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Perform things that should be done in tracer, but are done here
+   in order to minimize the number of hooks necessary in the MOM4 basecode </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="read_c14atm"></a>
+<h4>read_c14atm</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Reads temporal history of atmospheric C-14 (permil)
+   <br>
+<br>
+   ARGUMENT LIST -
+   <br>
+<br>
+   Note: Variable type is given in square brackets (below)
+   (r-real, i-integer, l-logical, c-character; s-scaler, a-array).
+   <br>
+<br>
+   INPUT:
+   <br>
+<br>
+   none
+   <br>
+<br>
+   OUTPUT: 
+   <br>
+<br>
+   [ia] - nc14rec    =  3-member array with the number of records
+   of atmospheric C-14 in each of the 3
+   latitudinal bands listed below.
+   <br>
+<br>
+   [ra] - yrc14rec   =  Sequential list of times (in decimal years)
+   for when atmospheric C-14 data is available
+   <br>
+<br>
+   [ra] - atmc14rec  =  Corresponding sequential list of atmospheric 
+   C-14 (permil), in 3 latitudinal bands:
+   (1) 90S - 20S,
+   (2) 20S - 20N, and
+   (3) 20N - 90N.
+   This record is from Enting et al. (1994).
+   <br>
+<br>
+   Reference:
+   <br>
+<br>
+   Enting, I.G., T. M. L. Wigley, M. Heimann, 1994. Future Emissions 
+   and concentrations of carbon dioxide: key ocean / atmosphere / 
+   land analyses, CSIRO Aust. Div. Atmos. Res. Tech. Pap. No. 31, 
+   118 pp.
+   <br>
+<br>
+   James ORR, LSCE/CEA-CNRS, Saclay, France, 17 April 1999 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="read_co2atm"></a>
+<h4>read_co2atm</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Read temporal history of atmospheric CO2 (uatm)
+   <br>
+<br>
+   Argument list -
+   <br>
+<br>
+   Note: Variable TYPE is given in square brackets (below)
+   (r-REAL, i-INTEGER, l-LOGICAL, c-CHARACTER; s-scaler, a-array).
+   <br>
+<br>
+   INPUT:
+   <br>
+<br>
+   [cs] - futr_scen  = IPCC future scenario: either S350, S450, S550,
+   S650, S750, DS450, or DS550 from Enting et al.
+   (1994), or CIS9 signifying c-IS92A for
+   IPCC (2000) run.  From 1765-1990.5, it 
+   doesn't matter which scenario you use, i.e., 
+   atmospheric CO2 will be the same (from a
+   spline fit to Siple Ice core and Mauna Loa
+   data.  Subsequently, atmospheric CO2 is 
+   different, according to the choice given above.
+   <br>
+<br>
+   OUTPUT: 
+   <br>
+<br>
+   [is] - nco2rec    =  Number of records (years) for atmospheric CO2
+   from historical (splco2.dat) plus
+   future (stab.dat) records
+   <br>
+<br>
+   [ra] - yrco2rec   =  sequential list of times (in decimal years)
+   for WHEN atmospheric CO2 data is available
+   <br>
+<br>
+   [ra] - atmco2rec  =  corresponding sequential list of atmospheric 
+   co2 (ppm).
+   <br>
+<br>
+   This record is from Enting et al. (1994).
+   <br>
+<br>
+   Reference:
+   <br>
+<br>
+   Enting, I.G., T. M. L. Wigley, M. Heimann, 1994. Future emissions 
+   and concentrations of carbon dioxide: key ocean / atmosphere / 
+   land analyses, CSIRO Aust. Div. Atmos. Res., Tech. Pap. No. 31, 
+   118 pp.
+   <br>
+<br>
+   James Orr, LSCE/CEA-CNRS, Saclay, France, 17 April 1999 </dd>
+<br>
+<br>
+</dl>
+</li>
+<li>
+<a name="set_array"></a>
+<h4>set_array</h4>
+<dl>
+<dt>
+<b>DESCRIPTION</b>
+</dt>
+<dd>   Set up an array covering the model domain with a user-specified
+   value, in user-specified regions. There are a given number of
+   2-d regions specified by the values slat, nlat, wlon and elon.
+   The longitudes are for a cyclic domain, and if wlon and elon
+   are on opposite sides of the cut, the correct thing will
+   be done. Elon is considered to be east of wlon, so if elon is
+   less than wlon, then the region east of elon to the cut will be
+   filled, and the region from the cut to wlon will be filled.
+   <br>
+<br>
+   After setting up the array in this routine, it may prove useful
+   to allow fine-tuning the settings via an array in a namelist.
+   <br>
+<br>
+   Arguments:
+   Input:
+   num_regions = number of user-specified regions which will be
+   filled
+   <br>
+<br>
+   wlon = 1-d array of western (starting) longitudes for the
+   rectangular regions
+   <br>
+<br>
+   elon = 1-d array of eastern (ending) longitudes for the
+   rectangular regions
+   <br>
+<br>
+   slat = 1-d array of southern (starting) latitudes for the
+   rectangular regions
+   <br>
+<br>
+   nlat = 1-d array of northern (ending) latitudes for the
+   rectangular regions
+   <br>
+<br>
+   Note: if slat &gt;= nlat, then nothing is done
+   for that region
+   <br>
+<br>
+   set_value = the value to assign to array in the user-specified
+   regions
+   <br>
+<br>
+   unset_value = the value to assign to array outside of the
+   user-specified regions
+   <br>
+<br>
+   name = character variable used in informative messages
+   <br>
+<br>
+   coastal_only = true to limit changes only to coastal points
+   (i.e., at least one bordering point is land)
+   <br>
+<br>
+   Output:
+   <br>
+<br>
+   array = 2-d array which will contain the set- and unset-
+   values. The array is assumed to have a border
+   one unit wide on all edges, ala MOM. A cyclic
+   boundary condition will be set if requested. </dd>
+<br>
+<br>
+</dl>
+</li>
+</ol>
+<!-- END PUBLIC ROUTINES -->
+<a name="PUBLIC TYPES"></a>
+<!-- BEGIN PUBLIC TYPES -->
+<!-- END PUBLIC TYPES --><a name="NAMELIST"></a>
+<!-- BEGIN NAMELIST -->
+<!-- END NAMELIST --><a name="DIAGNOSTIC FIELDS"></a>
+<!-- BEGIN DIAGNOSTIC FIELDS -->
+<!-- END DIAGNOSTIC FIELDS --><a name="DATA SETS"></a>
+<!-- BEGIN DATA SETS -->
+<hr>
+<h4>DATA SETS</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END DATA SETS -->
+<a name="PUBLIC CODE"></a>
+<!-- BEGIN PUBLIC CODE -->
+<!-- END PUBLIC CODE --><a name="ERROR MESSAGES"></a>
+<!-- BEGIN ERROR MESSAGES -->
+<hr>
+<h4>ERROR MESSAGES</h4>
+<div>None.<br>
+<br>
+</div>
+<!-- END ERROR MESSAGES -->
+<a name="REFERENCES"></a>
+<hr>
+<h4>REFERENCES</h4>
+<!-- BEGIN REFERENCES -->
+<div>
+<ol>
+<li>   http://www.ipsl.jussieu.fr/OCMIP/phase2/simulations/Biotic/HOWTO-Biotic.html </li>
+<li>   Press, W. H., S. A. Teukosky, W. T. Vetterling, B. P. Flannery, 1992. 
+   Numerical Recipes in FORTRAN, Second Edition, Cambridge University Press. </li>
+<li>   Enting, I.G., T. M. L. Wigley, M. Heimann, 1994. Future Emissions 
+   and concentrations of carbon dioxide: key ocean / atmosphere / 
+   land analyses, CSIRO Aust. Div. Atmos. Res. Tech. Pap. No. 31, 
+   118 pp. </li>
+</ol>
+</div>
+<br>
+<!-- END REFERENCES -->
+<a name="COMPILER SPECIFICS"></a>
+<hr>
+<h4>COMPILER SPECIFICS</h4>
+<!-- BEGIN COMPILER SPECIFICS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END COMPILER SPECIFICS -->
+<a name="PRECOMPILER OPTIONS"></a>
+<hr>
+<h4>PRECOMPILER OPTIONS</h4>
+<!-- BEGIN PRECOMPILER OPTIONS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END PRECOMPILER OPTIONS -->
+<a name="LOADER OPTIONS"></a>
+<hr>
+<h4>LOADER OPTIONS</h4>
+<!-- BEGIN LOADER -->
+<div>None.<br>
+<br>
+</div>
+<!-- END LOADER OPTIONS -->
+<a name="TEST PROGRAM"></a>
+<hr>
+<h4>TEST PROGRAM</h4>
+<!-- BEGIN TEST PROGRAM -->
+<div>None.<br>
+</div>
+<br>
+<!-- END TEST PROGRAM -->
+<a name="KNOWN BUGS"></a>
+<hr>
+<h4>KNOWN BUGS</h4>
+<!-- BEGIN KNOWN BUGS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END KNOWN BUGS -->
+<a name="NOTES"></a>
+<hr>
+<h4>NOTES</h4>
+<!-- BEGIN NOTES -->
+<div>None.<br>
+</div>
+<br>
+<!-- END NOTES -->
+<a name="FUTURE PLANS"></a>
+<hr>
+<h4>FUTURE PLANS</h4>
+<!-- BEGIN FUTURE PLANS -->
+<div>
+        None.
+      </div>
+<br>
+<!-- END FUTURE PLANS -->
+<hr>
+<div align="right">
+<font size="-1"><a href="#TOP">top</a></font>
+</div>
+</body>
+</html>
